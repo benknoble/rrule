@@ -111,3 +111,6 @@
             [(list _ordwk _weekday) #t]
             [(list _sign _ordwk _weekday) #t])
           w))
+
+
+;; TODO: exdate
