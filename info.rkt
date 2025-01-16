@@ -1,6 +1,8 @@
 #lang info
 (define collection "rrule")
-(define deps '("base"))
+(define deps '("gregor-lib"
+               "rackunit-lib"
+               "base"))
 (define build-deps '("scribble-lib" "racket-doc" "rackunit-lib"))
 (define scribblings '(("scribblings/rrule.scrbl" ())))
 (define pkg-desc "iCal recurrence rule implementation")
