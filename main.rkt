@@ -2,7 +2,38 @@
 
 (require gregor
          racket/contract
-         racket/match)
+         racket/sequence)
+
+(provide
+ (contract-out
+  [valid-rrule? (-> any/c any/c)]
+  [valid-rrule/dtstart? (-> any/c dtstart/c any/c)]
+  [make-rrule (->* (#:freq freq/c)
+                   (#:until enddate/c
+                    #:count exact-positive-integer?
+                    #:interval exact-positive-integer?
+                    #:bysecond byseclist/c
+                    #:byminute byminlist/c
+                    #:byhour byhrlist/c
+                    #:byday bywdaylist/c
+                    #:bymonthday bymodaylist/c
+                    #:byyearday byyrdaylist/c
+                    #:byweeknumber bywknolist/c
+                    #:bymonth bymolist/c
+                    #:bysetpos bysplist/c
+                    #:wkst weekday/c)
+                   (or/c #f valid-rrule?))]
+  [repeats-forever? (-> valid-rrule? any/c)]
+  [parse-rrule (-> string? (or/c #f valid-rrule?))]
+  [rrule->string (-> valid-rrule? string?)]
+  [in-rrule (->i ([r valid-rrule?] [d dtstart/c])
+                 #:pre (r d) (valid-rrule/dtstart? r d)
+                 [result (sequence/c moment?)])]
+  [rrule->list (->i ([r (and/c valid-rrule? (not/c repeats-forever?))] [d dtstart/c])
+                    #:pre (r d) (valid-rrule/dtstart? r d)
+                    [result (listof moment?)])]))
+
+(require racket/match)
 
 (define freq/c (or/c 'secondly 'minutely 'hourly 'daily 'weekly 'monthly 'yearly))
 (define seconds/c (integer-in 0 60))
@@ -39,7 +70,21 @@
 (define default-interval 1)
 (define default-wkst 'monday)
 
-(define (make-rrule #|…|#)
+(define (make-rrule
+         #:freq freq
+         #:until [until #f]
+         #:count [count #f]
+         #:interval [interval default-interval]
+         #:bysecond [bysecond #f]
+         #:byminute [byminute #f]
+         #:byhour [byhour #f]
+         #:byday [byday #f]
+         #:bymonthday [bymonthday #f]
+         #:byyearday [byyearday #f]
+         #:byweeknumber [byweeknumber #f]
+         #:bymonth [bymonth #f]
+         #:bysetpos [bysetpos #f]
+         #:wkst [wkst default-wkst])
   (error 'todo))
 
 (struct rrule
@@ -95,14 +140,11 @@
                      (rrule-byminute r)
                      (rrule-byhour r))))))
 
-(define (repeats-foreve? r)
+(define (repeats-forever? r)
   (and (not (rrule-until r))
        (not (rrule-count r))))
 
 (define (rrule->string r)
-  (error 'todo))
-
-(define (rrule+dstart->string r d)
   (error 'todo))
 
 (define (bywdaylist-contains-numeric-value? w)
@@ -112,5 +154,13 @@
             [(list _sign _ordwk _weekday) #t])
           w))
 
+(define (parse-rrule str)
+  (error 'todo))
+
+(define (in-rrule rr dtstart)
+  (error 'todo))
+
+(define (rrule->list rr dtstart)
+  (sequence->list (in-rrule rr dtstart)))
 
 ;; TODO: exdate
