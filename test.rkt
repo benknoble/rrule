@@ -13,3 +13,2829 @@
 (define-check (check-rrule-list a-rule dtstart moments)
   (check-equal? (rrule->list a-rule dtstart)
                 moments))
+
+(test-case "test-yearly"
+  (check-rrule-list (make-rrule #:freq 'yearly
+                                #:count 3)
+                    (moment 1997 9 2 9 0)
+                    (list (moment 1997 9 2 9 0)
+                          (moment 1998 9 2 9 0)
+                          (moment 1999 9 2 9 0))))
+
+(test-case "test-yearly-interval"
+  (check-rrule-list (make-rrule #:freq 'yearly
+                                #:count 3
+                                #:interval 2)
+                    (moment 1997 9 2 9 0)
+                    (list (moment 1997 9 2 9 0)
+                          (moment 1999 9 2 9 0)
+                          (moment 2001 9 2 9 0))))
+
+(test-case "test-yearly-interval-large"
+  (check-rrule-list (make-rrule #:freq 'yearly
+                                #:count 3
+                                #:interval 100)
+                    (moment 1997 9 2 9 0)
+                    (list (moment 1997 9 2 9 0)
+                          (moment 2097 9 2 9 0)
+                          (moment 2197 9 2 9 0))))
+
+(test-case "test-yearly-by-month"
+  (check-rrule-list (make-rrule #:freq 'yearly
+                                #:count 3
+                                #:bymonth '(1 3))
+                    (moment 1997 9 2 9 0)
+                    (list (moment 1998 1 2 9 0)
+                          (moment 1998 3 2 9 0)
+                          (moment 1999 1 2 9 0))))
+
+(test-case "test-yearly-by-month-day"
+  (check-rrule-list (make-rrule #:freq 'yearly
+                                #:count 3
+                                #:bymonthday '(1 3))
+                    (moment 1997 9 2 9 0)
+                    (list (moment 1997 9 3 9 0)
+                          (moment 1997 10 1 9 0)
+                          (moment 1997 10 3 9 0))))
+
+(test-case "test-yearly-by-month-and-month-day"
+  (check-rrule-list (make-rrule #:freq 'yearly
+                                #:count 3
+                                #:bymonth '(1 3)
+                                #:bymonthday '(5 7))
+                    (moment 1997 9 2 9 0)
+                    (list (moment 1998 1 5 9 0)
+                          (moment 1998 1 7 9 0)
+                          (moment 1998 3 5 9 0))))
+
+(test-case "test-yearly-by-week-day"
+  (check-rrule-list (make-rrule #:freq 'yearly
+                                #:count 3
+                                #:byday '(tuesday thursday))
+                    (moment 1997 9 2 9 0)
+                    (list (moment 1997 9 2 9 0)
+                          (moment 1997 9 4 9 0)
+                          (moment 1997 9 9 9 0))))
+
+(test-case "test-yearly-by-n-week-day"
+  (check-rrule-list (make-rrule #:freq 'yearly
+                                #:count 3
+                                #:byday '((1 tuesday) (-1 thursday)))
+                    (moment 1997 9 2 9 0)
+                    (list (moment 1997 12 25 9 0)
+                          (moment 1998 1 6 9 0)
+                          (moment 1998 12 31 9 0))))
+
+(test-case "test-yearly-by-n-week-day-large"
+  (check-rrule-list (make-rrule #:freq 'yearly
+                                #:count 3
+                                #:byday '((3 tuesday) (-3 thursday)))
+                    (moment 1997 9 2 9 0)
+                    (list (moment 1997 12 11 9 0)
+                          (moment 1998 1 20 9 0)
+                          (moment 1998 12 17 9 0))))
+
+(test-case "test-yearly-by-month-and-week-day"
+  (check-rrule-list (make-rrule #:freq 'yearly
+                                #:count 3
+                                #:bymonth '(1 3)
+                                #:byday '(tuesday thursday))
+                    (moment 1997 9 2 9 0)
+                    (list (moment 1998 1 1 9 0)
+                          (moment 1998 1 6 9 0)
+                          (moment 1998 1 8 9 0))))
+
+(test-case "test-yearly-by-month-and-n-week-day"
+  (check-rrule-list (make-rrule #:freq 'yearly
+                                #:count 3
+                                #:bymonth '(1 3)
+                                #:byday '((1 tuesday) (-1 thursday)))
+                    (moment 1997 9 2 9 0)
+                    (list (moment 1998 1 6 9 0)
+                          (moment 1998 1 29 9 0)
+                          (moment 1998 3 3 9 0))))
+
+(test-case "test-yearly-by-month-and-n-week-day-large"
+  ;; This is interesting because the TH(-3) ends up before the TU(3).
+  (check-rrule-list (make-rrule #:freq 'yearly
+                                #:count 3
+                                #:bymonth '(1 3)
+                                #:byday '((3 tuesday) (-3 thursday)))
+                    (moment 1997 9 2 9 0)
+                    (list (moment 1998 1 15 9 0)
+                          (moment 1998 1 20 9 0)
+                          (moment 1998 3 12 9 0))))
+
+(test-case "test-yearly-by-month-day-and-week-day"
+  (check-rrule-list (make-rrule #:freq 'yearly
+                                #:count 3
+                                #:bymonthday '(1 3)
+                                #:byday '(tuesday thursday))
+                    (moment 1997 9 2 9 0)
+                    (list (moment 1998 1 1 9 0)
+                          (moment 1998 2 3 9 0)
+                          (moment 1998 3 3 9 0))))
+
+(test-case "test-yearly-by-month-and-month-day-and-week-day"
+  (check-rrule-list (make-rrule #:freq 'yearly
+                                #:count 3
+                                #:bymonth '(1 3)
+                                #:bymonthday '(1 3)
+                                #:byday '(tuesday thursday))
+                    (moment 1997 9 2 9 0)
+                    (list (moment 1998 1 1 9 0)
+                          (moment 1998 3 3 9 0)
+                          (moment 2001 3 1 9 0))))
+
+(test-case "test-yearly-by-year-day"
+  (check-rrule-list (make-rrule #:freq 'yearly
+                                #:count 4
+                                #:byyearday '(1 100 200 365))
+                    (moment 1997 9 2 9 0)
+                    (list (moment 1997 12 31 9 0)
+                          (moment 1998 1 1 9 0)
+                          (moment 1998 4 10 9 0)
+                          (moment 1998 7 19 9 0))))
+
+(test-case "test-yearly-by-year-day-neg"
+  (check-rrule-list (make-rrule #:freq 'yearly
+                                #:count 4
+                                #:byyearday '(-365 -266 -166 -1))
+                    (moment 1997 9 2 9 0)
+                    (list (moment 1997 12 31 9 0)
+                          (moment 1998 1 1 9 0)
+                          (moment 1998 4 10 9 0)
+                          (moment 1998 7 19 9 0))))
+
+(test-case "test-yearly-by-month-and-year-day"
+  (check-rrule-list (make-rrule #:freq 'yearly
+                                #:count 4
+                                #:bymonth '(4 7)
+                                #:byyearday '(1 100 200 365))
+                    (moment 1997 9 2 9 0)
+                    (list (moment 1998 4 10 9 0)
+                          (moment 1998 7 19 9 0)
+                          (moment 1999 4 10 9 0)
+                          (moment 1999 7 19 9 0))))
+
+(test-case "test-yearly-by-month-and-year-day-neg"
+  (check-rrule-list (make-rrule #:freq 'yearly
+                                #:count 4
+                                #:bymonth '(4 7)
+                                #:byyearday '(-365 -266 -166 -1))
+                    (moment 1997 9 2 9 0)
+                    (list (moment 1998 4 10 9 0)
+                          (moment 1998 7 19 9 0)
+                          (moment 1999 4 10 9 0)
+                          (moment 1999 7 19 9 0))))
+
+(test-case "test-yearly-by-week-no"
+  (check-rrule-list (make-rrule #:freq 'yearly
+                                #:count 3
+                                #:byweeknumber '(20))
+                    (moment 1997 9 2 9 0)
+                    (list (moment 1998 5 11 9 0)
+                          (moment 1998 5 12 9 0)
+                          (moment 1998 5 13 9 0))))
+
+(test-case "test-yearly-by-week-no-and-week-day"
+  ;; That's a nice one. The first days of week number one may be in the last
+  ;; year.
+  (check-rrule-list (make-rrule #:freq 'yearly
+                                #:count 3
+                                #:byweeknumber '(1)
+                                #:byday '(monday))
+                    (moment 1997 9 2 9 0)
+                    (list (moment 1997 12 29 9 0)
+                          (moment 1999 1 4 9 0)
+                          (moment 2000 1 3 9 0))))
+
+(test-case "test-yearly-by-week-no-and-week-day-large"
+  ;; Another nice test. The last days of week number 52/53 may be in the next
+  ;; year.
+  (check-rrule-list (make-rrule #:freq 'yearly
+                                #:count 3
+                                #:byweeknumber '(52)
+                                #:byday '(sunday))
+                    (moment 1997 9 2 9 0)
+                    (list (moment 1997 12 28 9 0)
+                          (moment 1998 12 27 9 0)
+                          (moment 2000 1 2 9 0))))
+
+(test-case "test-yearly-by-week-no-and-week-day-last"
+  (check-rrule-list (make-rrule #:freq 'yearly
+                                #:count 3
+                                #:byweeknumber '(-1)
+                                #:byday '(sunday))
+                    (moment 1997 9 2 9 0)
+                    (list (moment 1997 12 28 9 0)
+                          (moment 1999 1 3 9 0)
+                          (moment 2000 1 2 9 0))))
+
+(test-case "test-yearly-by-week-no-and-week-day53"
+  (check-rrule-list (make-rrule #:freq 'yearly
+                                #:count 3
+                                #:byweeknumber '(53)
+                                #:byday '(monday))
+                    (moment 1997 9 2 9 0)
+                    (list (moment 1998 12 28 9 0)
+                          (moment 2004 12 27 9 0)
+                          (moment 2009 12 28 9 0))))
+
+(test-case "test-yearly-by-hour"
+  (check-rrule-list (make-rrule #:freq 'yearly
+                                #:count 3
+                                #:byhour '(6 18))
+                    (moment 1997 9 2 9 0)
+                    (list (moment 1997 9 2 18 0)
+                          (moment 1998 9 2 6 0)
+                          (moment 1998 9 2 18 0))))
+
+(test-case "test-yearly-by-minute"
+  (check-rrule-list (make-rrule #:freq 'yearly
+                                #:count 3
+                                #:byminute '(6 18))
+                    (moment 1997 9 2 9 0)
+                    (list (moment 1997 9 2 9 6)
+                          (moment 1997 9 2 9 18)
+                          (moment 1998 9 2 9 6))))
+
+(test-case "test-yearly-by-second"
+  (check-rrule-list (make-rrule #:freq 'yearly
+                                #:count 3
+                                #:bysecond '(6 18))
+                    (moment 1997 9 2 9 0)
+                    (list (moment 1997 9 2 9 0 6)
+                          (moment 1997 9 2 9 0 18)
+                          (moment 1998 9 2 9 0 6))))
+
+(test-case "test-yearly-by-hour-and-minute"
+  (check-rrule-list (make-rrule #:freq 'yearly
+                                #:count 3
+                                #:byhour '(6 18)
+                                #:byminute '(6 18))
+                    (moment 1997 9 2 9 0)
+                    (list (moment 1997 9 2 18 6)
+                          (moment 1997 9 2 18 18)
+                          (moment 1998 9 2 6 6))))
+
+(test-case "test-yearly-by-hour-and-second"
+  (check-rrule-list (make-rrule #:freq 'yearly
+                                #:count 3
+                                #:byhour '(6 18)
+                                #:bysecond '(6 18))
+                    (moment 1997 9 2 9 0)
+                    (list (moment 1997 9 2 18 0 6)
+                          (moment 1997 9 2 18 0 18)
+                          (moment 1998 9 2 6 0 6))))
+
+(test-case "test-yearly-by-minute-and-second"
+  (check-rrule-list (make-rrule #:freq 'yearly
+                                #:count 3
+                                #:byminute '(6 18)
+                                #:bysecond '(6 18))
+                    (moment 1997 9 2 9 0)
+                    (list (moment 1997 9 2 9 6 6)
+                          (moment 1997 9 2 9 6 18)
+                          (moment 1997 9 2 9 18 6))))
+
+(test-case "test-yearly-by-hour-and-minute-and-second"
+  (check-rrule-list (make-rrule #:freq 'yearly
+                                #:count 3
+                                #:byhour '(6 18)
+                                #:byminute '(6 18)
+                                #:bysecond '(6 18))
+                    (moment 1997 9 2 9 0)
+                    (list (moment 1997 9 2 18 6 6)
+                          (moment 1997 9 2 18 6 18)
+                          (moment 1997 9 2 18 18 6))))
+
+(test-case "test-yearly-by-set-pos"
+  (check-rrule-list (make-rrule #:freq 'yearly
+                                #:count 3
+                                #:bymonthday '(15)
+                                #:byhour '(6 18)
+                                #:bysetpos '(3 -3))
+                    (moment 1997 9 2 9 0)
+                    (list (moment 1997 11 15 18 0)
+                          (moment 1998 2 15 6 0)
+                          (moment 1998 11 15 18 0))))
+
+(test-case "test-monthly"
+  (check-rrule-list (make-rrule #:freq 'monthly
+                                #:count 3)
+                    (moment 1997 9 2 9 0)
+                    (list (moment 1997 9 2 9 0)
+                          (moment 1997 10 2 9 0)
+                          (moment 1997 11 2 9 0))))
+
+(test-case "test-monthly-interval"
+  (check-rrule-list (make-rrule #:freq 'monthly
+                                #:count 3
+                                #:interval 2)
+                    (moment 1997 9 2 9 0)
+                    (list (moment 1997 9 2 9 0)
+                          (moment 1997 11 2 9 0)
+                          (moment 1998 1 2 9 0))))
+
+(test-case "test-monthly-interval-large"
+  (check-rrule-list (make-rrule #:freq 'monthly
+                                #:count 3
+                                #:interval 18)
+                    (moment 1997 9 2 9 0)
+                    (list (moment 1997 9 2 9 0)
+                          (moment 1999 3 2 9 0)
+                          (moment 2000 9 2 9 0))))
+
+(test-case "test-monthly-by-month"
+  (check-rrule-list (make-rrule #:freq 'monthly
+                                #:count 3
+                                #:bymonth '(1 3))
+                    (moment 1997 9 2 9 0)
+                    (list (moment 1998 1 2 9 0)
+                          (moment 1998 3 2 9 0)
+                          (moment 1999 1 2 9 0))))
+
+(test-case "test-monthly-by-month-day"
+  (check-rrule-list (make-rrule #:freq 'monthly
+                                #:count 3
+                                #:bymonthday '(1 3))
+                    (moment 1997 9 2 9 0)
+                    (list (moment 1997 9 3 9 0)
+                          (moment 1997 10 1 9 0)
+                          (moment 1997 10 3 9 0))))
+
+(test-case "test-monthly-by-month-and-month-day"
+  (check-rrule-list (make-rrule #:freq 'monthly
+                                #:count 3
+                                #:bymonth '(1 3)
+                                #:bymonthday '(5 7))
+                    (moment 1997 9 2 9 0)
+                    (list (moment 1998 1 5 9 0)
+                          (moment 1998 1 7 9 0)
+                          (moment 1998 3 5 9 0))))
+
+(test-case "test-monthly-by-week-day"
+  (check-rrule-list (make-rrule #:freq 'monthly
+                                #:count 3
+                                #:byday '(tuesday thursday))
+                    (moment 1997 9 2 9 0)
+                    (list (moment 1997 9 2 9 0)
+                          (moment 1997 9 4 9 0)
+                          (moment 1997 9 9 9 0)))
+
+  ;; Third Monday of the month
+  (check-rrule-list (make-rrule #:freq 'monthly
+                                #:count 3
+                                #:byday '((+3 monday)))
+                    (moment 1997 9 1)
+                    (list (moment 1997 9 15 0 0)
+                          (moment 1997 10 20 0 0)
+                          (moment 1997 11 17 0 0))))
+
+(test-case "test-monthly-by-n-week-day"
+  (check-rrule-list (make-rrule #:freq 'monthly
+                                #:count 3
+                                #:byday '((1 tuesday) (-1 thursday)))
+                    (moment 1997 9 2 9 0)
+                    (list (moment 1997 9 2 9 0)
+                          (moment 1997 9 25 9 0)
+                          (moment 1997 10 7 9 0))))
+
+(test-case "test-monthly-by-n-week-day-large"
+  (check-rrule-list (make-rrule #:freq 'monthly
+                                #:count 3
+                                #:byday '((3 tuesday) (-3 thursday)))
+                    (moment 1997 9 2 9 0)
+                    (list (moment 1997 9 11 9 0)
+                          (moment 1997 9 16 9 0)
+                          (moment 1997 10 16 9 0))))
+
+(test-case "test-monthly-by-month-and-week-day"
+  (check-rrule-list (make-rrule #:freq 'monthly
+                                #:count 3
+                                #:bymonth '(1 3)
+                                #:byday '(tuesday thursday))
+                    (moment 1997 9 2 9 0)
+                    (list (moment 1998 1 1 9 0)
+                          (moment 1998 1 6 9 0)
+                          (moment 1998 1 8 9 0))))
+
+(test-case "test-monthly-by-month-and-n-week-day"
+  (check-rrule-list (make-rrule #:freq 'monthly
+                                #:count 3
+                                #:bymonth '(1 3)
+                                #:byday '((1 tuesday) (-1 thursday)))
+                    (moment 1997 9 2 9 0)
+                    (list (moment 1998 1 6 9 0)
+                          (moment 1998 1 29 9 0)
+                          (moment 1998 3 3 9 0))))
+
+(test-case "test-monthly-by-month-and-n-week-day-large"
+  (check-rrule-list (make-rrule #:freq 'monthly
+                                #:count 3
+                                #:bymonth '(1 3)
+                                #:byday '((3 tuesday) (-3 thursday)))
+                    (moment 1997 9 2 9 0)
+                    (list (moment 1998 1 15 9 0)
+                          (moment 1998 1 20 9 0)
+                          (moment 1998 3 12 9 0))))
+
+(test-case "test-monthly-by-month-day-and-week-day"
+  (check-rrule-list (make-rrule #:freq 'monthly
+                                #:count 3
+                                #:bymonthday '(1 3)
+                                #:byday '(tuesday thursday))
+                    (moment 1997 9 2 9 0)
+                    (list (moment 1998 1 1 9 0)
+                          (moment 1998 2 3 9 0)
+                          (moment 1998 3 3 9 0))))
+
+(test-case "test-monthly-by-month-and-month-day-and-week-day"
+  (check-rrule-list (make-rrule #:freq 'monthly
+                                #:count 3
+                                #:bymonth '(1 3)
+                                #:bymonthday '(1 3)
+                                #:byday '(tuesday thursday))
+                    (moment 1997 9 2 9 0)
+                    (list (moment 1998 1 1 9 0)
+                          (moment 1998 3 3 9 0)
+                          (moment 2001 3 1 9 0))))
+
+(test-case "test-monthly-by-year-day"
+  (check-rrule-list (make-rrule #:freq 'monthly
+                                #:count 4
+                                #:byyearday '(1 100 200 365))
+                    (moment 1997 9 2 9 0)
+                    (list (moment 1997 12 31 9 0)
+                          (moment 1998 1 1 9 0)
+                          (moment 1998 4 10 9 0)
+                          (moment 1998 7 19 9 0))))
+
+(test-case "test-monthly-by-year-day-neg"
+  (check-rrule-list (make-rrule #:freq 'monthly
+                                #:count 4
+                                #:byyearday '(-365 -266 -166 -1))
+                    (moment 1997 9 2 9 0)
+                    (list (moment 1997 12 31 9 0)
+                          (moment 1998 1 1 9 0)
+                          (moment 1998 4 10 9 0)
+                          (moment 1998 7 19 9 0))))
+
+(test-case "test-monthly-by-month-and-year-day"
+  (check-rrule-list (make-rrule #:freq 'monthly
+                                #:count 4
+                                #:bymonth '(4 7)
+                                #:byyearday '(1 100 200 365))
+                    (moment 1997 9 2 9 0)
+                    (list (moment 1998 4 10 9 0)
+                          (moment 1998 7 19 9 0)
+                          (moment 1999 4 10 9 0)
+                          (moment 1999 7 19 9 0))))
+
+(test-case "test-monthly-by-month-and-year-day-neg"
+  (check-rrule-list (make-rrule #:freq 'monthly
+                                #:count 4
+                                #:bymonth '(4 7)
+                                #:byyearday '(-365 -266 -166 -1))
+                    (moment 1997 9 2 9 0)
+                    (list (moment 1998 4 10 9 0)
+                          (moment 1998 7 19 9 0)
+                          (moment 1999 4 10 9 0)
+                          (moment 1999 7 19 9 0))))
+
+(test-case "test-monthly-by-week-no"
+  (check-rrule-list (make-rrule #:freq 'monthly
+                                #:count 3
+                                #:byweeknumber '(20))
+                    (moment 1997 9 2 9 0)
+                    (list (moment 1998 5 11 9 0)
+                          (moment 1998 5 12 9 0)
+                          (moment 1998 5 13 9 0))))
+
+(test-case "test-monthly-by-week-no-and-week-day"
+  ;; That's a nice one. The first days of week number one may be in the last
+  ;; year.
+  (check-rrule-list (make-rrule #:freq 'monthly
+                                #:count 3
+                                #:byweeknumber '(1)
+                                #:byday '(monday))
+                    (moment 1997 9 2 9 0)
+                    (list (moment 1997 12 29 9 0)
+                          (moment 1999 1 4 9 0)
+                          (moment 2000 1 3 9 0))))
+
+(test-case "test-monthly-by-week-no-and-week-day-large"
+  ;; Another nice test. The last days of week number 52/53 may be in the next
+  ;; year.
+  (check-rrule-list (make-rrule #:freq 'monthly
+                                #:count 3
+                                #:byweeknumber '(52)
+                                #:byday '(sunday))
+                    (moment 1997 9 2 9 0)
+                    (list (moment 1997 12 28 9 0)
+                          (moment 1998 12 27 9 0)
+                          (moment 2000 1 2 9 0))))
+
+(test-case "test-monthly-by-week-no-and-week-day-last"
+  (check-rrule-list (make-rrule #:freq 'monthly
+                                #:count 3
+                                #:byweeknumber '(-1)
+                                #:byday '(sunday))
+                    (moment 1997 9 2 9 0)
+                    (list (moment 1997 12 28 9 0)
+                          (moment 1999 1 3 9 0)
+                          (moment 2000 1 2 9 0))))
+
+(test-case "test-monthly-by-week-no-and-week-day53"
+  (check-rrule-list (make-rrule #:freq 'monthly
+                                #:count 3
+                                #:byweeknumber '(53)
+                                #:byday '(monday))
+                    (moment 1997 9 2 9 0)
+                    (list (moment 1998 12 28 9 0)
+                          (moment 2004 12 27 9 0)
+                          (moment 2009 12 28 9 0))))
+
+(test-case "test-monthly-by-hour"
+  (check-rrule-list (make-rrule #:freq 'monthly
+                                #:count 3
+                                #:byhour '(6 18))
+                    (moment 1997 9 2 9 0)
+                    (list (moment 1997 9 2 18 0)
+                          (moment 1997 10 2 6 0)
+                          (moment 1997 10 2 18 0))))
+
+(test-case "test-monthly-by-minute"
+  (check-rrule-list (make-rrule #:freq 'monthly
+                                #:count 3
+                                #:byminute '(6 18))
+                    (moment 1997 9 2 9 0)
+                    (list (moment 1997 9 2 9 6)
+                          (moment 1997 9 2 9 18)
+                          (moment 1997 10 2 9 6))))
+
+(test-case "test-monthly-by-second"
+  (check-rrule-list (make-rrule #:freq 'monthly
+                                #:count 3
+                                #:bysecond '(6 18))
+                    (moment 1997 9 2 9 0)
+                    (list (moment 1997 9 2 9 0 6)
+                          (moment 1997 9 2 9 0 18)
+                          (moment 1997 10 2 9 0 6))))
+
+(test-case "test-monthly-by-hour-and-minute"
+  (check-rrule-list (make-rrule #:freq 'monthly
+                                #:count 3
+                                #:byhour '(6 18)
+                                #:byminute '(6 18))
+                    (moment 1997 9 2 9 0)
+                    (list (moment 1997 9 2 18 6)
+                          (moment 1997 9 2 18 18)
+                          (moment 1997 10 2 6 6))))
+
+(test-case "test-monthly-by-hour-and-second"
+  (check-rrule-list (make-rrule #:freq 'monthly
+                                #:count 3
+                                #:byhour '(6 18)
+                                #:bysecond '(6 18))
+                    (moment 1997 9 2 9 0)
+                    (list (moment 1997 9 2 18 0 6)
+                          (moment 1997 9 2 18 0 18)
+                          (moment 1997 10 2 6 0 6))))
+
+(test-case "test-monthly-by-minute-and-second"
+  (check-rrule-list (make-rrule #:freq 'monthly
+                                #:count 3
+                                #:byminute '(6 18)
+                                #:bysecond '(6 18))
+                    (moment 1997 9 2 9 0)
+                    (list (moment 1997 9 2 9 6 6)
+                          (moment 1997 9 2 9 6 18)
+                          (moment 1997 9 2 9 18 6))))
+
+(test-case "test-monthly-by-hour-and-minute-and-second"
+  (check-rrule-list (make-rrule #:freq 'monthly
+                                #:count 3
+                                #:byhour '(6 18)
+                                #:byminute '(6 18)
+                                #:bysecond '(6 18))
+                    (moment 1997 9 2 9 0)
+                    (list (moment 1997 9 2 18 6 6)
+                          (moment 1997 9 2 18 6 18)
+                          (moment 1997 9 2 18 18 6))))
+
+(test-case "test-monthly-by-set-pos"
+  (check-rrule-list (make-rrule #:freq 'monthly
+                                #:count 3
+                                #:bymonthday '(13 17)
+                                #:byhour '(6 18)
+                                #:bysetpos '(3 -3))
+                    (moment 1997 9 2 9 0)
+                    (list (moment 1997 9 13 18 0)
+                          (moment 1997 9 17 6 0)
+                          (moment 1997 10 13 18 0))))
+
+(test-case "test-weekly"
+  (check-rrule-list (make-rrule #:freq 'weekly
+                                #:count 3)
+                    (moment 1997 9 2 9 0)
+                    (list (moment 1997 9 2 9 0)
+                          (moment 1997 9 9 9 0)
+                          (moment 1997 9 16 9 0))))
+
+(test-case "test-weekly-interval"
+  (check-rrule-list (make-rrule #:freq 'weekly
+                                #:count 3
+                                #:interval 2)
+                    (moment 1997 9 2 9 0)
+                    (list (moment 1997 9 2 9 0)
+                          (moment 1997 9 16 9 0)
+                          (moment 1997 9 30 9 0))))
+
+(test-case "test-weekly-interval-large"
+  (check-rrule-list (make-rrule #:freq 'weekly
+                                #:count 3
+                                #:interval 20)
+                    (moment 1997 9 2 9 0)
+                    (list (moment 1997 9 2 9 0)
+                          (moment 1998 1 20 9 0)
+                          (moment 1998 6 9 9 0))))
+
+(test-case "test-weekly-by-month"
+  (check-rrule-list (make-rrule #:freq 'weekly
+                                #:count 3
+                                #:bymonth '(1 3))
+                    (moment 1997 9 2 9 0)
+                    (list (moment 1998 1 6 9 0)
+                          (moment 1998 1 13 9 0)
+                          (moment 1998 1 20 9 0))))
+
+(test-case "test-weekly-by-month-day"
+  (check-rrule-list (make-rrule #:freq 'weekly
+                                #:count 3
+                                #:bymonthday '(1 3))
+                    (moment 1997 9 2 9 0)
+                    (list (moment 1997 9 3 9 0)
+                          (moment 1997 10 1 9 0)
+                          (moment 1997 10 3 9 0))))
+
+(test-case "test-weekly-by-month-and-month-day"
+  (check-rrule-list (make-rrule #:freq 'weekly
+                                #:count 3
+                                #:bymonth '(1 3)
+                                #:bymonthday '(5 7))
+                    (moment 1997 9 2 9 0)
+                    (list (moment 1998 1 5 9 0)
+                          (moment 1998 1 7 9 0)
+                          (moment 1998 3 5 9 0))))
+
+(test-case "test-weekly-by-week-day"
+  (check-rrule-list (make-rrule #:freq 'weekly
+                                #:count 3
+                                #:byday '(tuesday thursday))
+                    (moment 1997 9 2 9 0)
+                    (list (moment 1997 9 2 9 0)
+                          (moment 1997 9 4 9 0)
+                          (moment 1997 9 9 9 0))))
+
+(test-case "test-weekly-by-n-week-day"
+  (check-rrule-list (make-rrule #:freq 'weekly
+                                #:count 3
+                                #:byday '((1 tuesday) (-1 thursday)))
+                    (moment 1997 9 2 9 0)
+                    (list (moment 1997 9 2 9 0)
+                          (moment 1997 9 4 9 0)
+                          (moment 1997 9 9 9 0))))
+
+(test-case "test-weekly-by-month-and-week-day"
+  ;; This test is interesting because it crosses the year boundary in a weekly
+  ;; period to find day '1' as a valid recurrence.
+  (check-rrule-list (make-rrule #:freq 'weekly
+                                #:count 3
+                                #:bymonth '(1 3)
+                                #:byday '(tuesday thursday))
+                    (moment 1997 9 2 9 0)
+                    (list (moment 1998 1 1 9 0)
+                          (moment 1998 1 6 9 0)
+                          (moment 1998 1 8 9 0))))
+
+(test-case "test-weekly-by-month-and-n-week-day"
+  (check-rrule-list (make-rrule #:freq 'weekly
+                                #:count 3
+                                #:bymonth '(1 3)
+                                #:byday '((1 tuesday) (-1 thursday)))
+                    (moment 1997 9 2 9 0)
+                    (list (moment 1998 1 1 9 0)
+                          (moment 1998 1 6 9 0)
+                          (moment 1998 1 8 9 0))))
+
+(test-case "test-weekly-by-month-day-and-week-day"
+  (check-rrule-list (make-rrule #:freq 'weekly
+                                #:count 3
+                                #:bymonthday '(1 3)
+                                #:byday '(tuesday thursday))
+                    (moment 1997 9 2 9 0)
+                    (list (moment 1998 1 1 9 0)
+                          (moment 1998 2 3 9 0)
+                          (moment 1998 3 3 9 0))))
+
+(test-case "test-weekly-by-month-and-month-day-and-week-day"
+  (check-rrule-list (make-rrule #:freq 'weekly
+                                #:count 3
+                                #:bymonth '(1 3)
+                                #:bymonthday '(1 3)
+                                #:byday '(tuesday thursday))
+                    (moment 1997 9 2 9 0)
+                    (list (moment 1998 1 1 9 0)
+                          (moment 1998 3 3 9 0)
+                          (moment 2001 3 1 9 0))))
+
+(test-case "test-weekly-by-year-day"
+  (check-rrule-list (make-rrule #:freq 'weekly
+                                #:count 4
+                                #:byyearday '(1 100 200 365))
+                    (moment 1997 9 2 9 0)
+                    (list (moment 1997 12 31 9 0)
+                          (moment 1998 1 1 9 0)
+                          (moment 1998 4 10 9 0)
+                          (moment 1998 7 19 9 0))))
+
+(test-case "test-weekly-by-year-day-neg"
+  (check-rrule-list (make-rrule #:freq 'weekly
+                                #:count 4
+                                #:byyearday '(-365 -266 -166 -1))
+                    (moment 1997 9 2 9 0)
+                    (list (moment 1997 12 31 9 0)
+                          (moment 1998 1 1 9 0)
+                          (moment 1998 4 10 9 0)
+                          (moment 1998 7 19 9 0))))
+
+(test-case "test-weekly-by-month-and-year-day"
+  (check-rrule-list (make-rrule #:freq 'weekly
+                                #:count 4
+                                #:bymonth '(1 7)
+                                #:byyearday '(1 100 200 365))
+                    (moment 1997 9 2 9 0)
+                    (list (moment 1998 1 1 9 0)
+                          (moment 1998 7 19 9 0)
+                          (moment 1999 1 1 9 0)
+                          (moment 1999 7 19 9 0))))
+
+(test-case "test-weekly-by-month-and-year-day-neg"
+  (check-rrule-list (make-rrule #:freq 'weekly
+                                #:count 4
+                                #:bymonth '(1 7)
+                                #:byyearday '(-365 -266 -166 -1))
+                    (moment 1997 9 2 9 0)
+                    (list (moment 1998 1 1 9 0)
+                          (moment 1998 7 19 9 0)
+                          (moment 1999 1 1 9 0)
+                          (moment 1999 7 19 9 0))))
+
+(test-case "test-weekly-by-week-no"
+  (check-rrule-list (make-rrule #:freq 'weekly
+                                #:count 3
+                                #:byweeknumber '(20))
+                    (moment 1997 9 2 9 0)
+                    (list (moment 1998 5 11 9 0)
+                          (moment 1998 5 12 9 0)
+                          (moment 1998 5 13 9 0))))
+
+(test-case "test-weekly-by-week-no-and-week-day"
+  ;; That's a nice one. The first days of week number one may be in the last
+  ;; year.
+  (check-rrule-list (make-rrule #:freq 'weekly
+                                #:count 3
+                                #:byweeknumber '(1)
+                                #:byday '(monday))
+                    (moment 1997 9 2 9 0)
+                    (list (moment 1997 12 29 9 0)
+                          (moment 1999 1 4 9 0)
+                          (moment 2000 1 3 9 0))))
+
+(test-case "test-weekly-by-week-no-and-week-day-large"
+  ;; Another nice test. The last days of week number 52/53 may be in the next
+  ;; year.
+  (check-rrule-list (make-rrule #:freq 'weekly
+                                #:count 3
+                                #:byweeknumber '(52)
+                                #:byday '(sunday))
+                    (moment 1997 9 2 9 0)
+                    (list (moment 1997 12 28 9 0)
+                          (moment 1998 12 27 9 0)
+                          (moment 2000 1 2 9 0))))
+
+(test-case "test-weekly-by-week-no-and-week-day-last"
+  (check-rrule-list (make-rrule #:freq 'weekly
+                                #:count 3
+                                #:byweeknumber '(-1)
+                                #:byday '(sunday))
+                    (moment 1997 9 2 9 0)
+                    (list (moment 1997 12 28 9 0)
+                          (moment 1999 1 3 9 0)
+                          (moment 2000 1 2 9 0))))
+
+(test-case "test-weekly-by-week-no-and-week-day53"
+  (check-rrule-list (make-rrule #:freq 'weekly
+                                #:count 3
+                                #:byweeknumber '(53)
+                                #:byday '(monday))
+                    (moment 1997 9 2 9 0)
+                    (list (moment 1998 12 28 9 0)
+                          (moment 2004 12 27 9 0)
+                          (moment 2009 12 28 9 0))))
+
+(test-case "test-weekly-by-hour"
+  (check-rrule-list (make-rrule #:freq 'weekly
+                                #:count 3
+                                #:byhour '(6 18))
+                    (moment 1997 9 2 9 0)
+                    (list (moment 1997 9 2 18 0)
+                          (moment 1997 9 9 6 0)
+                          (moment 1997 9 9 18 0))))
+
+(test-case "test-weekly-by-minute"
+  (check-rrule-list (make-rrule #:freq 'weekly
+                                #:count 3
+                                #:byminute '(6 18))
+                    (moment 1997 9 2 9 0)
+                    (list (moment 1997 9 2 9 6)
+                          (moment 1997 9 2 9 18)
+                          (moment 1997 9 9 9 6))))
+
+(test-case "test-weekly-by-second"
+  (check-rrule-list (make-rrule #:freq 'weekly
+                                #:count 3
+                                #:bysecond '(6 18))
+                    (moment 1997 9 2 9 0)
+                    (list (moment 1997 9 2 9 0 6)
+                          (moment 1997 9 2 9 0 18)
+                          (moment 1997 9 9 9 0 6))))
+
+(test-case "test-weekly-by-hour-and-minute"
+  (check-rrule-list (make-rrule #:freq 'weekly
+                                #:count 3
+                                #:byhour '(6 18)
+                                #:byminute '(6 18))
+                    (moment 1997 9 2 9 0)
+                    (list (moment 1997 9 2 18 6)
+                          (moment 1997 9 2 18 18)
+                          (moment 1997 9 9 6 6))))
+
+(test-case "test-weekly-by-hour-and-second"
+  (check-rrule-list (make-rrule #:freq 'weekly
+                                #:count 3
+                                #:byhour '(6 18)
+                                #:bysecond '(6 18))
+                    (moment 1997 9 2 9 0)
+                    (list (moment 1997 9 2 18 0 6)
+                          (moment 1997 9 2 18 0 18)
+                          (moment 1997 9 9 6 0 6))))
+
+(test-case "test-weekly-by-minute-and-second"
+  (check-rrule-list (make-rrule #:freq 'weekly
+                                #:count 3
+                                #:byminute '(6 18)
+                                #:bysecond '(6 18))
+                    (moment 1997 9 2 9 0)
+                    (list (moment 1997 9 2 9 6 6)
+                          (moment 1997 9 2 9 6 18)
+                          (moment 1997 9 2 9 18 6))))
+
+(test-case "test-weekly-by-hour-and-minute-and-second"
+  (check-rrule-list (make-rrule #:freq 'weekly
+                                #:count 3
+                                #:byhour '(6 18)
+                                #:byminute '(6 18)
+                                #:bysecond '(6 18))
+                    (moment 1997 9 2 9 0)
+                    (list (moment 1997 9 2 18 6 6)
+                          (moment 1997 9 2 18 6 18)
+                          (moment 1997 9 2 18 18 6))))
+
+(test-case "test-weekly-by-set-pos"
+  (check-rrule-list (make-rrule #:freq 'weekly
+                                #:count 3
+                                #:byday '(tuesday thursday)
+                                #:byhour '(6 18)
+                                #:bysetpos '(3 -3))
+                    (moment 1997 9 2 9 0)
+                    (list (moment 1997 9 2 18 0)
+                          (moment 1997 9 4 6 0)
+                          (moment 1997 9 9 18 0))))
+
+(test-case "test-daily"
+  (check-rrule-list (make-rrule #:freq 'daily
+                                #:count 3)
+                    (moment 1997 9 2 9 0)
+                    (list (moment 1997 9 2 9 0)
+                          (moment 1997 9 3 9 0)
+                          (moment 1997 9 4 9 0))))
+
+(test-case "test-daily-interval"
+  (check-rrule-list (make-rrule #:freq 'daily
+                                #:count 3
+                                #:interval 2)
+                    (moment 1997 9 2 9 0)
+                    (list (moment 1997 9 2 9 0)
+                          (moment 1997 9 4 9 0)
+                          (moment 1997 9 6 9 0))))
+
+(test-case "test-daily-interval-large"
+  (check-rrule-list (make-rrule #:freq 'daily
+                                #:count 3
+                                #:interval 92)
+                    (moment 1997 9 2 9 0)
+                    (list (moment 1997 9 2 9 0)
+                          (moment 1997 12 3 9 0)
+                          (moment 1998 3 5 9 0))))
+
+(test-case "test-daily-by-month"
+  (check-rrule-list (make-rrule #:freq 'daily
+                                #:count 3
+                                #:bymonth '(1 3))
+                    (moment 1997 9 2 9 0)
+                    (list (moment 1998 1 1 9 0)
+                          (moment 1998 1 2 9 0)
+                          (moment 1998 1 3 9 0))))
+
+(test-case "test-daily-by-month-day"
+  (check-rrule-list (make-rrule #:freq 'daily
+                                #:count 3
+                                #:bymonthday '(1 3))
+                    (moment 1997 9 2 9 0)
+                    (list (moment 1997 9 3 9 0)
+                          (moment 1997 10 1 9 0)
+                          (moment 1997 10 3 9 0))))
+
+(test-case "test-daily-by-month-and-month-day"
+  (check-rrule-list (make-rrule #:freq 'daily
+                                #:count 3
+                                #:bymonth '(1 3)
+                                #:bymonthday '(5 7))
+                    (moment 1997 9 2 9 0)
+                    (list (moment 1998 1 5 9 0)
+                          (moment 1998 1 7 9 0)
+                          (moment 1998 3 5 9 0))))
+
+(test-case "test-daily-by-week-day"
+  (check-rrule-list (make-rrule #:freq 'daily
+                                #:count 3
+                                #:byday '(tuesday thursday))
+                    (moment 1997 9 2 9 0)
+                    (list (moment 1997 9 2 9 0)
+                          (moment 1997 9 4 9 0)
+                          (moment 1997 9 9 9 0))))
+
+(test-case "test-daily-by-n-week-day"
+  (check-rrule-list (make-rrule #:freq 'daily
+                                #:count 3
+                                #:byday '((1 tuesday) (-1 thursday)))
+                    (moment 1997 9 2 9 0)
+                    (list (moment 1997 9 2 9 0)
+                          (moment 1997 9 4 9 0)
+                          (moment 1997 9 9 9 0))))
+
+(test-case "test-daily-by-month-and-week-day"
+  (check-rrule-list (make-rrule #:freq 'daily
+                                #:count 3
+                                #:bymonth '(1 3)
+                                #:byday '(tuesday thursday))
+                    (moment 1997 9 2 9 0)
+                    (list (moment 1998 1 1 9 0)
+                          (moment 1998 1 6 9 0)
+                          (moment 1998 1 8 9 0))))
+
+(test-case "test-daily-by-month-and-n-week-day"
+  (check-rrule-list (make-rrule #:freq 'daily
+                                #:count 3
+                                #:bymonth '(1 3)
+                                #:byday '((1 tuesday) (-1 thursday)))
+                    (moment 1997 9 2 9 0)
+                    (list (moment 1998 1 1 9 0)
+                          (moment 1998 1 6 9 0)
+                          (moment 1998 1 8 9 0))))
+
+(test-case "test-daily-by-month-day-and-week-day"
+  (check-rrule-list (make-rrule #:freq 'daily
+                                #:count 3
+                                #:bymonthday '(1 3)
+                                #:byday '(tuesday thursday))
+                    (moment 1997 9 2 9 0)
+                    (list (moment 1998 1 1 9 0)
+                          (moment 1998 2 3 9 0)
+                          (moment 1998 3 3 9 0))))
+
+(test-case "test-daily-by-month-and-month-day-and-week-day"
+  (check-rrule-list (make-rrule #:freq 'daily
+                                #:count 3
+                                #:bymonth '(1 3)
+                                #:bymonthday '(1 3)
+                                #:byday '(tuesday thursday))
+                    (moment 1997 9 2 9 0)
+                    (list (moment 1998 1 1 9 0)
+                          (moment 1998 3 3 9 0)
+                          (moment 2001 3 1 9 0))))
+
+(test-case "test-daily-by-year-day"
+  (check-rrule-list (make-rrule #:freq 'daily
+                                #:count 4
+                                #:byyearday '(1 100 200 365))
+                    (moment 1997 9 2 9 0)
+                    (list (moment 1997 12 31 9 0)
+                          (moment 1998 1 1 9 0)
+                          (moment 1998 4 10 9 0)
+                          (moment 1998 7 19 9 0))))
+
+(test-case "test-daily-by-year-day-neg"
+  (check-rrule-list (make-rrule #:freq 'daily
+                                #:count 4
+                                #:byyearday '(-365 -266 -166 -1))
+                    (moment 1997 9 2 9 0)
+                    (list (moment 1997 12 31 9 0)
+                          (moment 1998 1 1 9 0)
+                          (moment 1998 4 10 9 0)
+                          (moment 1998 7 19 9 0))))
+
+(test-case "test-daily-by-month-and-year-day"
+  (check-rrule-list (make-rrule #:freq 'daily
+                                #:count 4
+                                #:bymonth '(1 7)
+                                #:byyearday '(1 100 200 365))
+                    (moment 1997 9 2 9 0)
+                    (list (moment 1998 1 1 9 0)
+                          (moment 1998 7 19 9 0)
+                          (moment 1999 1 1 9 0)
+                          (moment 1999 7 19 9 0))))
+
+(test-case "test-daily-by-month-and-year-day-neg"
+  (check-rrule-list (make-rrule #:freq 'daily
+                                #:count 4
+                                #:bymonth '(1 7)
+                                #:byyearday '(-365 -266 -166 -1))
+                    (moment 1997 9 2 9 0)
+                    (list (moment 1998 1 1 9 0)
+                          (moment 1998 7 19 9 0)
+                          (moment 1999 1 1 9 0)
+                          (moment 1999 7 19 9 0))))
+
+(test-case "test-daily-by-week-no"
+  (check-rrule-list (make-rrule #:freq 'daily
+                                #:count 3
+                                #:byweeknumber '(20))
+                    (moment 1997 9 2 9 0)
+                    (list (moment 1998 5 11 9 0)
+                          (moment 1998 5 12 9 0)
+                          (moment 1998 5 13 9 0))))
+
+(test-case "test-daily-by-week-no-and-week-day"
+  ;; That's a nice one. The first days of week number one may be in the last
+  ;; year.
+  (check-rrule-list (make-rrule #:freq 'daily
+                                #:count 3
+                                #:byweeknumber '(1)
+                                #:byday '(monday))
+                    (moment 1997 9 2 9 0)
+                    (list (moment 1997 12 29 9 0)
+                          (moment 1999 1 4 9 0)
+                          (moment 2000 1 3 9 0))))
+
+(test-case "test-daily-by-week-no-and-week-day-large"
+  ;; Another nice test. The last days of week number 52/53 may be in the next
+  ;; year.
+  (check-rrule-list (make-rrule #:freq 'daily
+                                #:count 3
+                                #:byweeknumber '(52)
+                                #:byday '(sunday))
+                    (moment 1997 9 2 9 0)
+                    (list (moment 1997 12 28 9 0)
+                          (moment 1998 12 27 9 0)
+                          (moment 2000 1 2 9 0))))
+
+(test-case "test-daily-by-week-no-and-week-day-last"
+  (check-rrule-list (make-rrule #:freq 'daily
+                                #:count 3
+                                #:byweeknumber '(-1)
+                                #:byday '(sunday))
+                    (moment 1997 9 2 9 0)
+                    (list (moment 1997 12 28 9 0)
+                          (moment 1999 1 3 9 0)
+                          (moment 2000 1 2 9 0))))
+
+(test-case "test-daily-by-week-no-and-week-day53"
+  (check-rrule-list (make-rrule #:freq 'daily
+                                #:count 3
+                                #:byweeknumber '(53)
+                                #:byday '(monday))
+                    (moment 1997 9 2 9 0)
+                    (list (moment 1998 12 28 9 0)
+                          (moment 2004 12 27 9 0)
+                          (moment 2009 12 28 9 0))))
+
+(test-case "test-daily-by-hour"
+  (check-rrule-list (make-rrule #:freq 'daily
+                                #:count 3
+                                #:byhour '(6 18))
+                    (moment 1997 9 2 9 0)
+                    (list (moment 1997 9 2 18 0)
+                          (moment 1997 9 3 6 0)
+                          (moment 1997 9 3 18 0))))
+
+(test-case "test-daily-by-minute"
+  (check-rrule-list (make-rrule #:freq 'daily
+                                #:count 3
+                                #:byminute '(6 18))
+                    (moment 1997 9 2 9 0)
+                    (list (moment 1997 9 2 9 6)
+                          (moment 1997 9 2 9 18)
+                          (moment 1997 9 3 9 6))))
+
+(test-case "test-daily-by-second"
+  (check-rrule-list (make-rrule #:freq 'daily
+                                #:count 3
+                                #:bysecond '(6 18))
+                    (moment 1997 9 2 9 0)
+                    (list (moment 1997 9 2 9 0 6)
+                          (moment 1997 9 2 9 0 18)
+                          (moment 1997 9 3 9 0 6))))
+
+(test-case "test-daily-by-hour-and-minute"
+  (check-rrule-list (make-rrule #:freq 'daily
+                                #:count 3
+                                #:byhour '(6 18)
+                                #:byminute '(6 18))
+                    (moment 1997 9 2 9 0)
+                    (list (moment 1997 9 2 18 6)
+                          (moment 1997 9 2 18 18)
+                          (moment 1997 9 3 6 6))))
+
+(test-case "test-daily-by-hour-and-second"
+  (check-rrule-list (make-rrule #:freq 'daily
+                                #:count 3
+                                #:byhour '(6 18)
+                                #:bysecond '(6 18))
+                    (moment 1997 9 2 9 0)
+                    (list (moment 1997 9 2 18 0 6)
+                          (moment 1997 9 2 18 0 18)
+                          (moment 1997 9 3 6 0 6))))
+
+(test-case "test-daily-by-minute-and-second"
+  (check-rrule-list (make-rrule #:freq 'daily
+                                #:count 3
+                                #:byminute '(6 18)
+                                #:bysecond '(6 18))
+                    (moment 1997 9 2 9 0)
+                    (list (moment 1997 9 2 9 6 6)
+                          (moment 1997 9 2 9 6 18)
+                          (moment 1997 9 2 9 18 6))))
+
+(test-case "test-daily-by-hour-and-minute-and-second"
+  (check-rrule-list (make-rrule #:freq 'daily
+                                #:count 3
+                                #:byhour '(6 18)
+                                #:byminute '(6 18)
+                                #:bysecond '(6 18))
+                    (moment 1997 9 2 9 0)
+                    (list (moment 1997 9 2 18 6 6)
+                          (moment 1997 9 2 18 6 18)
+                          (moment 1997 9 2 18 18 6))))
+
+(test-case "test-daily-by-set-pos"
+  (check-rrule-list (make-rrule #:freq 'daily
+                                #:count 3
+                                #:byhour '(6 18)
+                                #:byminute '(15 45)
+                                #:bysetpos '(3 -3))
+                    (moment 1997 9 2 9 0)
+                    (list (moment 1997 9 2 18 15)
+                          (moment 1997 9 3 6 45)
+                          (moment 1997 9 3 18 15))))
+
+(test-case "test-hourly"
+  (check-rrule-list (make-rrule #:freq 'hourly
+                                #:count 3)
+                    (moment 1997 9 2 9 0)
+                    (list (moment 1997 9 2 9 0)
+                          (moment 1997 9 2 10 0)
+                          (moment 1997 9 2 11 0))))
+
+(test-case "test-hourly-interval"
+  (check-rrule-list (make-rrule #:freq 'hourly
+                                #:count 3
+                                #:interval 2)
+                    (moment 1997 9 2 9 0)
+                    (list (moment 1997 9 2 9 0)
+                          (moment 1997 9 2 11 0)
+                          (moment 1997 9 2 13 0))))
+
+(test-case "test-hourly-interval-large"
+  (check-rrule-list (make-rrule #:freq 'hourly
+                                #:count 3
+                                #:interval 769)
+                    (moment 1997 9 2 9 0)
+                    (list (moment 1997 9 2 9 0)
+                          (moment 1997 10 4 10 0)
+                          (moment 1997 11 5 11 0))))
+
+(test-case "test-hourly-by-month"
+  (check-rrule-list (make-rrule #:freq 'hourly
+                                #:count 3
+                                #:bymonth '(1 3))
+                    (moment 1997 9 2 9 0)
+                    (list (moment 1998 1 1 0 0)
+                          (moment 1998 1 1 1 0)
+                          (moment 1998 1 1 2 0))))
+
+(test-case "test-hourly-by-month-day"
+  (check-rrule-list (make-rrule #:freq 'hourly
+                                #:count 3
+                                #:bymonthday '(1 3))
+                    (moment 1997 9 2 9 0)
+                    (list (moment 1997 9 3 0 0)
+                          (moment 1997 9 3 1 0)
+                          (moment 1997 9 3 2 0))))
+
+(test-case "test-hourly-by-month-and-month-day"
+  (check-rrule-list (make-rrule #:freq 'hourly
+                                #:count 3
+                                #:bymonth '(1 3)
+                                #:bymonthday '(5 7))
+                    (moment 1997 9 2 9 0)
+                    (list (moment 1998 1 5 0 0)
+                          (moment 1998 1 5 1 0)
+                          (moment 1998 1 5 2 0))))
+
+(test-case "test-hourly-by-week-day"
+  (check-rrule-list (make-rrule #:freq 'hourly
+                                #:count 3
+                                #:byday '(tuesday thursday))
+                    (moment 1997 9 2 9 0)
+                    (list (moment 1997 9 2 9 0)
+                          (moment 1997 9 2 10 0)
+                          (moment 1997 9 2 11 0))))
+
+(test-case "test-hourly-by-n-week-day"
+  (check-rrule-list (make-rrule #:freq 'hourly
+                                #:count 3
+                                #:byday '((1 tuesday) (-1 thursday)))
+                    (moment 1997 9 2 9 0)
+                    (list (moment 1997 9 2 9 0)
+                          (moment 1997 9 2 10 0)
+                          (moment 1997 9 2 11 0))))
+
+(test-case "test-hourly-by-month-and-week-day"
+  (check-rrule-list (make-rrule #:freq 'hourly
+                                #:count 3
+                                #:bymonth '(1 3)
+                                #:byday '(tuesday thursday))
+                    (moment 1997 9 2 9 0)
+                    (list (moment 1998 1 1 0 0)
+                          (moment 1998 1 1 1 0)
+                          (moment 1998 1 1 2 0))))
+
+(test-case "test-hourly-by-month-and-n-week-day"
+  (check-rrule-list (make-rrule #:freq 'hourly
+                                #:count 3
+                                #:bymonth '(1 3)
+                                #:byday '((1 tuesday) (-1 thursday)))
+                    (moment 1997 9 2 9 0)
+                    (list (moment 1998 1 1 0 0)
+                          (moment 1998 1 1 1 0)
+                          (moment 1998 1 1 2 0))))
+
+(test-case "test-hourly-by-month-day-and-week-day"
+  (check-rrule-list (make-rrule #:freq 'hourly
+                                #:count 3
+                                #:bymonthday '(1 3)
+                                #:byday '(tuesday thursday))
+                    (moment 1997 9 2 9 0)
+                    (list (moment 1998 1 1 0 0)
+                          (moment 1998 1 1 1 0)
+                          (moment 1998 1 1 2 0))))
+
+(test-case "test-hourly-by-month-and-month-day-and-week-day"
+  (check-rrule-list (make-rrule #:freq 'hourly
+                                #:count 3
+                                #:bymonth '(1 3)
+                                #:bymonthday '(1 3)
+                                #:byday '(tuesday thursday))
+                    (moment 1997 9 2 9 0)
+                    (list (moment 1998 1 1 0 0)
+                          (moment 1998 1 1 1 0)
+                          (moment 1998 1 1 2 0))))
+
+(test-case "test-hourly-by-year-day"
+  (check-rrule-list (make-rrule #:freq 'hourly
+                                #:count 4
+                                #:byyearday '(1 100 200 365))
+                    (moment 1997 9 2 9 0)
+                    (list (moment 1997 12 31 0 0)
+                          (moment 1997 12 31 1 0)
+                          (moment 1997 12 31 2 0)
+                          (moment 1997 12 31 3 0))))
+
+(test-case "test-hourly-by-year-day-neg"
+  (check-rrule-list (make-rrule #:freq 'hourly
+                                #:count 4
+                                #:byyearday '(-365 -266 -166 -1))
+                    (moment 1997 9 2 9 0)
+                    (list (moment 1997 12 31 0 0)
+                          (moment 1997 12 31 1 0)
+                          (moment 1997 12 31 2 0)
+                          (moment 1997 12 31 3 0))))
+
+(test-case "test-hourly-by-month-and-year-day"
+  (check-rrule-list (make-rrule #:freq 'hourly
+                                #:count 4
+                                #:bymonth '(4 7)
+                                #:byyearday '(1 100 200 365))
+                    (moment 1997 9 2 9 0)
+                    (list (moment 1998 4 10 0 0)
+                          (moment 1998 4 10 1 0)
+                          (moment 1998 4 10 2 0)
+                          (moment 1998 4 10 3 0))))
+
+(test-case "test-hourly-by-month-and-year-day-neg"
+  (check-rrule-list (make-rrule #:freq 'hourly
+                                #:count 4
+                                #:bymonth '(4 7)
+                                #:byyearday '(-365 -266 -166 -1))
+                    (moment 1997 9 2 9 0)
+                    (list (moment 1998 4 10 0 0)
+                          (moment 1998 4 10 1 0)
+                          (moment 1998 4 10 2 0)
+                          (moment 1998 4 10 3 0))))
+
+(test-case "test-hourly-by-week-no"
+  (check-rrule-list (make-rrule #:freq 'hourly
+                                #:count 3
+                                #:byweeknumber '(20))
+                    (moment 1997 9 2 9 0)
+                    (list (moment 1998 5 11 0 0)
+                          (moment 1998 5 11 1 0)
+                          (moment 1998 5 11 2 0))))
+
+(test-case "test-hourly-by-week-no-and-week-day"
+  (check-rrule-list (make-rrule #:freq 'hourly
+                                #:count 3
+                                #:byweeknumber '(1)
+                                #:byday '(monday))
+                    (moment 1997 9 2 9 0)
+                    (list (moment 1997 12 29 0 0)
+                          (moment 1997 12 29 1 0)
+                          (moment 1997 12 29 2 0))))
+
+(test-case "test-hourly-by-week-no-and-week-day-large"
+  (check-rrule-list (make-rrule #:freq 'hourly
+                                #:count 3
+                                #:byweeknumber '(52)
+                                #:byday '(sunday))
+                    (moment 1997 9 2 9 0)
+                    (list (moment 1997 12 28 0 0)
+                          (moment 1997 12 28 1 0)
+                          (moment 1997 12 28 2 0))))
+
+(test-case "test-hourly-by-week-no-and-week-day-last"
+  (check-rrule-list (make-rrule #:freq 'hourly
+                                #:count 3
+                                #:byweeknumber '(-1)
+                                #:byday '(sunday))
+                    (moment 1997 9 2 9 0)
+                    (list (moment 1997 12 28 0 0)
+                          (moment 1997 12 28 1 0)
+                          (moment 1997 12 28 2 0))))
+
+(test-case "test-hourly-by-week-no-and-week-day53"
+  (check-rrule-list (make-rrule #:freq 'hourly
+                                #:count 3
+                                #:byweeknumber '(53)
+                                #:byday '(monday))
+                    (moment 1997 9 2 9 0)
+                    (list (moment 1998 12 28 0 0)
+                          (moment 1998 12 28 1 0)
+                          (moment 1998 12 28 2 0))))
+
+(test-case "test-hourly-by-hour"
+  (check-rrule-list (make-rrule #:freq 'hourly
+                                #:count 3
+                                #:byhour '(6 18))
+                    (moment 1997 9 2 9 0)
+                    (list (moment 1997 9 2 18 0)
+                          (moment 1997 9 3 6 0)
+                          (moment 1997 9 3 18 0))))
+
+(test-case "test-hourly-by-minute"
+  (check-rrule-list (make-rrule #:freq 'hourly
+                                #:count 3
+                                #:byminute '(6 18))
+                    (moment 1997 9 2 9 0)
+                    (list (moment 1997 9 2 9 6)
+                          (moment 1997 9 2 9 18)
+                          (moment 1997 9 2 10 6))))
+
+(test-case "test-hourly-by-second"
+  (check-rrule-list (make-rrule #:freq 'hourly
+                                #:count 3
+                                #:bysecond '(6 18))
+                    (moment 1997 9 2 9 0)
+                    (list (moment 1997 9 2 9 0 6)
+                          (moment 1997 9 2 9 0 18)
+                          (moment 1997 9 2 10 0 6))))
+
+(test-case "test-hourly-by-hour-and-minute"
+  (check-rrule-list (make-rrule #:freq 'hourly
+                                #:count 3
+                                #:byhour '(6 18)
+                                #:byminute '(6 18))
+                    (moment 1997 9 2 9 0)
+                    (list (moment 1997 9 2 18 6)
+                          (moment 1997 9 2 18 18)
+                          (moment 1997 9 3 6 6))))
+
+(test-case "test-hourly-by-hour-and-second"
+  (check-rrule-list (make-rrule #:freq 'hourly
+                                #:count 3
+                                #:byhour '(6 18)
+                                #:bysecond '(6 18))
+                    (moment 1997 9 2 9 0)
+                    (list (moment 1997 9 2 18 0 6)
+                          (moment 1997 9 2 18 0 18)
+                          (moment 1997 9 3 6 0 6))))
+
+(test-case "test-hourly-by-minute-and-second"
+  (check-rrule-list (make-rrule #:freq 'hourly
+                                #:count 3
+                                #:byminute '(6 18)
+                                #:bysecond '(6 18))
+                    (moment 1997 9 2 9 0)
+                    (list (moment 1997 9 2 9 6 6)
+                          (moment 1997 9 2 9 6 18)
+                          (moment 1997 9 2 9 18 6))))
+
+(test-case "test-hourly-by-hour-and-minute-and-second"
+  (check-rrule-list (make-rrule #:freq 'hourly
+                                #:count 3
+                                #:byhour '(6 18)
+                                #:byminute '(6 18)
+                                #:bysecond '(6 18))
+                    (moment 1997 9 2 9 0)
+                    (list (moment 1997 9 2 18 6 6)
+                          (moment 1997 9 2 18 6 18)
+                          (moment 1997 9 2 18 18 6))))
+
+(test-case "test-hourly-by-set-pos"
+  (check-rrule-list (make-rrule #:freq 'hourly
+                                #:count 3
+                                #:byminute '(15 45)
+                                #:bysecond '(15 45)
+                                #:bysetpos '(3 -3))
+                    (moment 1997 9 2 9 0)
+                    (list (moment 1997 9 2 9 15 45)
+                          (moment 1997 9 2 9 45 15)
+                          (moment 1997 9 2 10 15 45))))
+
+(test-case "test-minutely"
+  (check-rrule-list (make-rrule #:freq 'minutely
+                                #:count 3)
+                    (moment 1997 9 2 9 0)
+                    (list (moment 1997 9 2 9 0)
+                          (moment 1997 9 2 9 1)
+                          (moment 1997 9 2 9 2))))
+
+(test-case "test-minutely-interval"
+  (check-rrule-list (make-rrule #:freq 'minutely
+                                #:count 3
+                                #:interval 2)
+                    (moment 1997 9 2 9 0)
+                    (list (moment 1997 9 2 9 0)
+                          (moment 1997 9 2 9 2)
+                          (moment 1997 9 2 9 4))))
+
+(test-case "test-minutely-interval-large"
+  (check-rrule-list (make-rrule #:freq 'minutely
+                                #:count 3
+                                #:interval 1501)
+                    (moment 1997 9 2 9 0)
+                    (list (moment 1997 9 2 9 0)
+                          (moment 1997 9 3 10 1)
+                          (moment 1997 9 4 11 2))))
+
+(test-case "test-minutely-by-month"
+  (check-rrule-list (make-rrule #:freq 'minutely
+                                #:count 3
+                                #:bymonth '(1 3))
+                    (moment 1997 9 2 9 0)
+                    (list (moment 1998 1 1 0 0)
+                          (moment 1998 1 1 0 1)
+                          (moment 1998 1 1 0 2))))
+
+(test-case "test-minutely-by-month-day"
+  (check-rrule-list (make-rrule #:freq 'minutely
+                                #:count 3
+                                #:bymonthday '(1 3))
+                    (moment 1997 9 2 9 0)
+                    (list (moment 1997 9 3 0 0)
+                          (moment 1997 9 3 0 1)
+                          (moment 1997 9 3 0 2))))
+
+(test-case "test-minutely-by-month-and-month-day"
+  (check-rrule-list (make-rrule #:freq 'minutely
+                                #:count 3
+                                #:bymonth '(1 3)
+                                #:bymonthday '(5 7))
+                    (moment 1997 9 2 9 0)
+                    (list (moment 1998 1 5 0 0)
+                          (moment 1998 1 5 0 1)
+                          (moment 1998 1 5 0 2))))
+
+(test-case "test-minutely-by-week-day"
+  (check-rrule-list (make-rrule #:freq 'minutely
+                                #:count 3
+                                #:byday '(tuesday thursday))
+                    (moment 1997 9 2 9 0)
+                    (list (moment 1997 9 2 9 0)
+                          (moment 1997 9 2 9 1)
+                          (moment 1997 9 2 9 2))))
+
+(test-case "test-minutely-by-n-week-day"
+  (check-rrule-list (make-rrule #:freq 'minutely
+                                #:count 3
+                                #:byday '((1 tuesday) (-1 thursday)))
+                    (moment 1997 9 2 9 0)
+                    (list (moment 1997 9 2 9 0)
+                          (moment 1997 9 2 9 1)
+                          (moment 1997 9 2 9 2))))
+
+(test-case "test-minutely-by-month-and-week-day"
+  (check-rrule-list (make-rrule #:freq 'minutely
+                                #:count 3
+                                #:bymonth '(1 3)
+                                #:byday '(tuesday thursday))
+                    (moment 1997 9 2 9 0)
+                    (list (moment 1998 1 1 0 0)
+                          (moment 1998 1 1 0 1)
+                          (moment 1998 1 1 0 2))))
+
+(test-case "test-minutely-by-month-and-n-week-day"
+  (check-rrule-list (make-rrule #:freq 'minutely
+                                #:count 3
+                                #:bymonth '(1 3)
+                                #:byday '((1 tuesday) (-1 thursday)))
+                    (moment 1997 9 2 9 0)
+                    (list (moment 1998 1 1 0 0)
+                          (moment 1998 1 1 0 1)
+                          (moment 1998 1 1 0 2))))
+
+(test-case "test-minutely-by-month-day-and-week-day"
+  (check-rrule-list (make-rrule #:freq 'minutely
+                                #:count 3
+                                #:bymonthday '(1 3)
+                                #:byday '(tuesday thursday))
+                    (moment 1997 9 2 9 0)
+                    (list (moment 1998 1 1 0 0)
+                          (moment 1998 1 1 0 1)
+                          (moment 1998 1 1 0 2))))
+
+(test-case "test-minutely-by-month-and-month-day-and-week-day"
+  (check-rrule-list (make-rrule #:freq 'minutely
+                                #:count 3
+                                #:bymonth '(1 3)
+                                #:bymonthday '(1 3)
+                                #:byday '(tuesday thursday))
+                    (moment 1997 9 2 9 0)
+                    (list (moment 1998 1 1 0 0)
+                          (moment 1998 1 1 0 1)
+                          (moment 1998 1 1 0 2))))
+
+(test-case "test-minutely-by-year-day"
+  (check-rrule-list (make-rrule #:freq 'minutely
+                                #:count 4
+                                #:byyearday '(1 100 200 365))
+                    (moment 1997 9 2 9 0)
+                    (list (moment 1997 12 31 0 0)
+                          (moment 1997 12 31 0 1)
+                          (moment 1997 12 31 0 2)
+                          (moment 1997 12 31 0 3))))
+
+(test-case "test-minutely-by-year-day-neg"
+  (check-rrule-list (make-rrule #:freq 'minutely
+                                #:count 4
+                                #:byyearday '(-365 -266 -166 -1))
+                    (moment 1997 9 2 9 0)
+                    (list (moment 1997 12 31 0 0)
+                          (moment 1997 12 31 0 1)
+                          (moment 1997 12 31 0 2)
+                          (moment 1997 12 31 0 3))))
+
+(test-case "test-minutely-by-month-and-year-day"
+  (check-rrule-list (make-rrule #:freq 'minutely
+                                #:count 4
+                                #:bymonth '(4 7)
+                                #:byyearday '(1 100 200 365))
+                    (moment 1997 9 2 9 0)
+                    (list (moment 1998 4 10 0 0)
+                          (moment 1998 4 10 0 1)
+                          (moment 1998 4 10 0 2)
+                          (moment 1998 4 10 0 3))))
+
+(test-case "test-minutely-by-month-and-year-day-neg"
+  (check-rrule-list (make-rrule #:freq 'minutely
+                                #:count 4
+                                #:bymonth '(4 7)
+                                #:byyearday '(-365 -266 -166 -1))
+                    (moment 1997 9 2 9 0)
+                    (list (moment 1998 4 10 0 0)
+                          (moment 1998 4 10 0 1)
+                          (moment 1998 4 10 0 2)
+                          (moment 1998 4 10 0 3))))
+
+(test-case "test-minutely-by-week-no"
+  (check-rrule-list (make-rrule #:freq 'minutely
+                                #:count 3
+                                #:byweeknumber '(20))
+                    (moment 1997 9 2 9 0)
+                    (list (moment 1998 5 11 0 0)
+                          (moment 1998 5 11 0 1)
+                          (moment 1998 5 11 0 2))))
+
+(test-case "test-minutely-by-week-no-and-week-day"
+  (check-rrule-list (make-rrule #:freq 'minutely
+                                #:count 3
+                                #:byweeknumber '(1)
+                                #:byday '(monday))
+                    (moment 1997 9 2 9 0)
+                    (list (moment 1997 12 29 0 0)
+                          (moment 1997 12 29 0 1)
+                          (moment 1997 12 29 0 2))))
+
+(test-case "test-minutely-by-week-no-and-week-day-large"
+  (check-rrule-list (make-rrule #:freq 'minutely
+                                #:count 3
+                                #:byweeknumber '(52)
+                                #:byday '(sunday))
+                    (moment 1997 9 2 9 0)
+                    (list (moment 1997 12 28 0 0)
+                          (moment 1997 12 28 0 1)
+                          (moment 1997 12 28 0 2))))
+
+(test-case "test-minutely-by-week-no-and-week-day-last"
+  (check-rrule-list (make-rrule #:freq 'minutely
+                                #:count 3
+                                #:byweeknumber '(-1)
+                                #:byday '(sunday))
+                    (moment 1997 9 2 9 0)
+                    (list (moment 1997 12 28 0 0)
+                          (moment 1997 12 28 0 1)
+                          (moment 1997 12 28 0 2))))
+
+(test-case "test-minutely-by-week-no-and-week-day53"
+  (check-rrule-list (make-rrule #:freq 'minutely
+                                #:count 3
+                                #:byweeknumber '(53)
+                                #:byday '(monday))
+                    (moment 1997 9 2 9 0)
+                    (list (moment 1998 12 28 0 0)
+                          (moment 1998 12 28 0 1)
+                          (moment 1998 12 28 0 2))))
+
+(test-case "test-minutely-by-hour"
+  (check-rrule-list (make-rrule #:freq 'minutely
+                                #:count 3
+                                #:byhour '(6 18))
+                    (moment 1997 9 2 9 0)
+                    (list (moment 1997 9 2 18 0)
+                          (moment 1997 9 2 18 1)
+                          (moment 1997 9 2 18 2))))
+
+(test-case "test-minutely-by-minute"
+  (check-rrule-list (make-rrule #:freq 'minutely
+                                #:count 3
+                                #:byminute '(6 18))
+                    (moment 1997 9 2 9 0)
+                    (list (moment 1997 9 2 9 6)
+                          (moment 1997 9 2 9 18)
+                          (moment 1997 9 2 10 6))))
+
+(test-case "test-minutely-by-second"
+  (check-rrule-list (make-rrule #:freq 'minutely
+                                #:count 3
+                                #:bysecond '(6 18))
+                    (moment 1997 9 2 9 0)
+                    (list (moment 1997 9 2 9 0 6)
+                          (moment 1997 9 2 9 0 18)
+                          (moment 1997 9 2 9 1 6))))
+
+(test-case "test-minutely-by-hour-and-minute"
+  (check-rrule-list (make-rrule #:freq 'minutely
+                                #:count 3
+                                #:byhour '(6 18)
+                                #:byminute '(6 18))
+                    (moment 1997 9 2 9 0)
+                    (list (moment 1997 9 2 18 6)
+                          (moment 1997 9 2 18 18)
+                          (moment 1997 9 3 6 6))))
+
+(test-case "test-minutely-by-hour-and-second"
+  (check-rrule-list (make-rrule #:freq 'minutely
+                                #:count 3
+                                #:byhour '(6 18)
+                                #:bysecond '(6 18))
+                    (moment 1997 9 2 9 0)
+                    (list (moment 1997 9 2 18 0 6)
+                          (moment 1997 9 2 18 0 18)
+                          (moment 1997 9 2 18 1 6))))
+
+(test-case "test-minutely-by-minute-and-second"
+  (check-rrule-list (make-rrule #:freq 'minutely
+                                #:count 3
+                                #:byminute '(6 18)
+                                #:bysecond '(6 18))
+                    (moment 1997 9 2 9 0)
+                    (list (moment 1997 9 2 9 6 6)
+                          (moment 1997 9 2 9 6 18)
+                          (moment 1997 9 2 9 18 6))))
+
+(test-case "test-minutely-by-hour-and-minute-and-second"
+  (check-rrule-list (make-rrule #:freq 'minutely
+                                #:count 3
+                                #:byhour '(6 18)
+                                #:byminute '(6 18)
+                                #:bysecond '(6 18))
+                    (moment 1997 9 2 9 0)
+                    (list (moment 1997 9 2 18 6 6)
+                          (moment 1997 9 2 18 6 18)
+                          (moment 1997 9 2 18 18 6))))
+
+(test-case "test-minutely-by-set-pos"
+  (check-rrule-list (make-rrule #:freq 'minutely
+                                #:count 3
+                                #:bysecond '(15 30 45)
+                                #:bysetpos '(3 -3))
+                    (moment 1997 9 2 9 0)
+                    (list (moment 1997 9 2 9 0 15)
+                          (moment 1997 9 2 9 0 45)
+                          (moment 1997 9 2 9 1 15))))
+
+(test-case "test-secondly"
+  (check-rrule-list (make-rrule #:freq 'secondly
+                                #:count 3)
+                    (moment 1997 9 2 9 0)
+                    (list (moment 1997 9 2 9 0 0)
+                          (moment 1997 9 2 9 0 1)
+                          (moment 1997 9 2 9 0 2))))
+
+(test-case "test-secondly-interval"
+  (check-rrule-list (make-rrule #:freq 'secondly
+                                #:count 3
+                                #:interval 2)
+                    (moment 1997 9 2 9 0)
+                    (list (moment 1997 9 2 9 0 0)
+                          (moment 1997 9 2 9 0 2)
+                          (moment 1997 9 2 9 0 4))))
+
+(test-case "test-secondly-interval-large"
+  (check-rrule-list (make-rrule #:freq 'secondly
+                                #:count 3
+                                #:interval 90061)
+                    (moment 1997 9 2 9 0)
+                    (list (moment 1997 9 2 9 0 0)
+                          (moment 1997 9 3 10 1 1)
+                          (moment 1997 9 4 11 2 2))))
+
+(test-case "test-secondly-by-month"
+  (check-rrule-list (make-rrule #:freq 'secondly
+                                #:count 3
+                                #:bymonth '(1 3))
+                    (moment 1997 9 2 9 0)
+                    (list (moment 1998 1 1 0 0 0)
+                          (moment 1998 1 1 0 0 1)
+                          (moment 1998 1 1 0 0 2))))
+
+(test-case "test-secondly-by-month-day"
+  (check-rrule-list (make-rrule #:freq 'secondly
+                                #:count 3
+                                #:bymonthday '(1 3))
+                    (moment 1997 9 2 9 0)
+                    (list (moment 1997 9 3 0 0 0)
+                          (moment 1997 9 3 0 0 1)
+                          (moment 1997 9 3 0 0 2))))
+
+(test-case "test-secondly-by-month-and-month-day"
+  (check-rrule-list (make-rrule #:freq 'secondly
+                                #:count 3
+                                #:bymonth '(1 3)
+                                #:bymonthday '(5 7))
+                    (moment 1997 9 2 9 0)
+                    (list (moment 1998 1 5 0 0 0)
+                          (moment 1998 1 5 0 0 1)
+                          (moment 1998 1 5 0 0 2))))
+
+(test-case "test-secondly-by-week-day"
+  (check-rrule-list (make-rrule #:freq 'secondly
+                                #:count 3
+                                #:byday '(tuesday thursday))
+                    (moment 1997 9 2 9 0)
+                    (list (moment 1997 9 2 9 0 0)
+                          (moment 1997 9 2 9 0 1)
+                          (moment 1997 9 2 9 0 2))))
+
+(test-case "test-secondly-by-n-week-day"
+  (check-rrule-list (make-rrule #:freq 'secondly
+                                #:count 3
+                                #:byday '((1 tuesday) (-1 thursday)))
+                    (moment 1997 9 2 9 0)
+                    (list (moment 1997 9 2 9 0 0)
+                          (moment 1997 9 2 9 0 1)
+                          (moment 1997 9 2 9 0 2))))
+
+(test-case "test-secondly-by-month-and-week-day"
+  (check-rrule-list (make-rrule #:freq 'secondly
+                                #:count 3
+                                #:bymonth '(1 3)
+                                #:byday '(tuesday thursday))
+                    (moment 1997 9 2 9 0)
+                    (list (moment 1998 1 1 0 0 0)
+                          (moment 1998 1 1 0 0 1)
+                          (moment 1998 1 1 0 0 2))))
+
+(test-case "test-secondly-by-month-and-n-week-day"
+  (check-rrule-list (make-rrule #:freq 'secondly
+                                #:count 3
+                                #:bymonth '(1 3)
+                                #:byday '((1 tuesday) (-1 thursday)))
+                    (moment 1997 9 2 9 0)
+                    (list (moment 1998 1 1 0 0 0)
+                          (moment 1998 1 1 0 0 1)
+                          (moment 1998 1 1 0 0 2))))
+
+(test-case "test-secondly-by-month-day-and-week-day"
+  (check-rrule-list (make-rrule #:freq 'secondly
+                                #:count 3
+                                #:bymonthday '(1 3)
+                                #:byday '(tuesday thursday))
+                    (moment 1997 9 2 9 0)
+                    (list (moment 1998 1 1 0 0 0)
+                          (moment 1998 1 1 0 0 1)
+                          (moment 1998 1 1 0 0 2))))
+
+(test-case "test-secondly-by-month-and-month-day-and-week-day"
+  (check-rrule-list (make-rrule #:freq 'secondly
+                                #:count 3
+                                #:bymonth '(1 3)
+                                #:bymonthday '(1 3)
+                                #:byday '(tuesday thursday))
+                    (moment 1997 9 2 9 0)
+                    (list (moment 1998 1 1 0 0 0)
+                          (moment 1998 1 1 0 0 1)
+                          (moment 1998 1 1 0 0 2))))
+
+(test-case "test-secondly-by-year-day"
+  (check-rrule-list (make-rrule #:freq 'secondly
+                                #:count 4
+                                #:byyearday '(1 100 200 365))
+                    (moment 1997 9 2 9 0)
+                    (list (moment 1997 12 31 0 0 0)
+                          (moment 1997 12 31 0 0 1)
+                          (moment 1997 12 31 0 0 2)
+                          (moment 1997 12 31 0 0 3))))
+
+(test-case "test-secondly-by-year-day-neg"
+  (check-rrule-list (make-rrule #:freq 'secondly
+                                #:count 4
+                                #:byyearday '(-365 -266 -166 -1))
+                    (moment 1997 9 2 9 0)
+                    (list (moment 1997 12 31 0 0 0)
+                          (moment 1997 12 31 0 0 1)
+                          (moment 1997 12 31 0 0 2)
+                          (moment 1997 12 31 0 0 3))))
+
+(test-case "test-secondly-by-month-and-year-day"
+  (check-rrule-list (make-rrule #:freq 'secondly
+                                #:count 4
+                                #:bymonth '(4 7)
+                                #:byyearday '(1 100 200 365))
+                    (moment 1997 9 2 9 0)
+                    (list (moment 1998 4 10 0 0 0)
+                          (moment 1998 4 10 0 0 1)
+                          (moment 1998 4 10 0 0 2)
+                          (moment 1998 4 10 0 0 3))))
+
+(test-case "test-secondly-by-month-and-year-day-neg"
+  (check-rrule-list (make-rrule #:freq 'secondly
+                                #:count 4
+                                #:bymonth '(4 7)
+                                #:byyearday '(-365 -266 -166 -1))
+                    (moment 1997 9 2 9 0)
+                    (list (moment 1998 4 10 0 0 0)
+                          (moment 1998 4 10 0 0 1)
+                          (moment 1998 4 10 0 0 2)
+                          (moment 1998 4 10 0 0 3))))
+
+(test-case "test-secondly-by-week-no"
+  (check-rrule-list (make-rrule #:freq 'secondly
+                                #:count 3
+                                #:byweeknumber '(20))
+                    (moment 1997 9 2 9 0)
+                    (list (moment 1998 5 11 0 0 0)
+                          (moment 1998 5 11 0 0 1)
+                          (moment 1998 5 11 0 0 2))))
+
+(test-case "test-secondly-by-week-no-and-week-day"
+  (check-rrule-list (make-rrule #:freq 'secondly
+                                #:count 3
+                                #:byweeknumber '(1)
+                                #:byday '(monday))
+                    (moment 1997 9 2 9 0)
+                    (list (moment 1997 12 29 0 0 0)
+                          (moment 1997 12 29 0 0 1)
+                          (moment 1997 12 29 0 0 2))))
+
+(test-case "test-secondly-by-week-no-and-week-day-large"
+  (check-rrule-list (make-rrule #:freq 'secondly
+                                #:count 3
+                                #:byweeknumber '(52)
+                                #:byday '(sunday))
+                    (moment 1997 9 2 9 0)
+                    (list (moment 1997 12 28 0 0 0)
+                          (moment 1997 12 28 0 0 1)
+                          (moment 1997 12 28 0 0 2))))
+
+(test-case "test-secondly-by-week-no-and-week-day-last"
+  (check-rrule-list (make-rrule #:freq 'secondly
+                                #:count 3
+                                #:byweeknumber '(-1)
+                                #:byday '(sunday))
+                    (moment 1997 9 2 9 0)
+                    (list (moment 1997 12 28 0 0 0)
+                          (moment 1997 12 28 0 0 1)
+                          (moment 1997 12 28 0 0 2))))
+
+(test-case "test-secondly-by-week-no-and-week-day53"
+  (check-rrule-list (make-rrule #:freq 'secondly
+                                #:count 3
+                                #:byweeknumber '(53)
+                                #:byday '(monday))
+                    (moment 1997 9 2 9 0)
+                    (list (moment 1998 12 28 0 0 0)
+                          (moment 1998 12 28 0 0 1)
+                          (moment 1998 12 28 0 0 2))))
+
+(test-case "test-secondly-by-hour"
+  (check-rrule-list (make-rrule #:freq 'secondly
+                                #:count 3
+                                #:byhour '(6 18))
+                    (moment 1997 9 2 9 0)
+                    (list (moment 1997 9 2 18 0 0)
+                          (moment 1997 9 2 18 0 1)
+                          (moment 1997 9 2 18 0 2))))
+
+(test-case "test-secondly-by-minute"
+  (check-rrule-list (make-rrule #:freq 'secondly
+                                #:count 3
+                                #:byminute '(6 18))
+                    (moment 1997 9 2 9 0)
+                    (list (moment 1997 9 2 9 6 0)
+                          (moment 1997 9 2 9 6 1)
+                          (moment 1997 9 2 9 6 2))))
+
+(test-case "test-secondly-by-second"
+  (check-rrule-list (make-rrule #:freq 'secondly
+                                #:count 3
+                                #:bysecond '(6 18))
+                    (moment 1997 9 2 9 0)
+                    (list (moment 1997 9 2 9 0 6)
+                          (moment 1997 9 2 9 0 18)
+                          (moment 1997 9 2 9 1 6))))
+
+(test-case "test-secondly-by-hour-and-minute"
+  (check-rrule-list (make-rrule #:freq 'secondly
+                                #:count 3
+                                #:byhour '(6 18)
+                                #:byminute '(6 18))
+                    (moment 1997 9 2 9 0)
+                    (list (moment 1997 9 2 18 6 0)
+                          (moment 1997 9 2 18 6 1)
+                          (moment 1997 9 2 18 6 2))))
+
+(test-case "test-secondly-by-hour-and-second"
+  (check-rrule-list (make-rrule #:freq 'secondly
+                                #:count 3
+                                #:byhour '(6 18)
+                                #:bysecond '(6 18))
+                    (moment 1997 9 2 9 0)
+                    (list (moment 1997 9 2 18 0 6)
+                          (moment 1997 9 2 18 0 18)
+                          (moment 1997 9 2 18 1 6))))
+
+(test-case "test-secondly-by-minute-and-second"
+  (check-rrule-list (make-rrule #:freq 'secondly
+                                #:count 3
+                                #:byminute '(6 18)
+                                #:bysecond '(6 18))
+                    (moment 1997 9 2 9 0)
+                    (list (moment 1997 9 2 9 6 6)
+                          (moment 1997 9 2 9 6 18)
+                          (moment 1997 9 2 9 18 6))))
+
+(test-case "test-secondly-by-hour-and-minute-and-second"
+  (check-rrule-list (make-rrule #:freq 'secondly
+                                #:count 3
+                                #:byhour '(6 18)
+                                #:byminute '(6 18)
+                                #:bysecond '(6 18))
+                    (moment 1997 9 2 9 0)
+                    (list (moment 1997 9 2 18 6 6)
+                          (moment 1997 9 2 18 6 18)
+                          (moment 1997 9 2 18 18 6))))
+
+(test-case "test-secondly-by-hour-and-minute-and-second-bug"
+  ;; This explores a bug found by Mathieu Bridon.
+  (check-rrule-list (make-rrule #:freq 'secondly
+                                #:count 3
+                                #:bysecond '(0)
+                                #:byminute '(1))
+                    (moment 2010 3 22 12 1)
+                    (list (moment 2010 3 22 12 1)
+                          (moment 2010 3 22 13 1)
+                          (moment 2010 3 22 14 1))))
+
+(test-case "test-long-integers (from dateutil)"
+  (check-rrule-list (make-rrule #:freq 'minutely
+                                #:count 2
+                                #:interval 2
+                                #:bymonth '(2)
+                                #:byday '(3)
+                                #:byhour '(6)
+                                #:byminute '(6)
+                                #:bysecond '(6))
+                    (moment 1997 9 2 9 0)
+                    (list (moment 1998 2 5 6 6 6)
+                          (moment 1998 2 12 6 6 6)))
+  (check-rrule-list (make-rrule #:freq 'yearly
+                                #:count 2
+                                #:bymonthday '(5)
+                                #:byweeknumber '(2))
+                    (moment 1997 9 2 9 0)
+                    (list (moment 1998 1 5 9 0)
+                          (moment 2004 1 5 9 0))))
+
+
+(test-case "test-hourly-bad-rrule"
+  ;; When `byhour` is specified with `#:freq HOURLY` there are certain
+  ;; combinations of `dtstart` and `byhour` which result in an rrule with no
+  ;; valid values. See https://github.com/dateutil/dateutil/issues/4
+  (check-exn exn:fail:contract?
+             (thunk
+              (in-rrule
+               (make-rrule #:freq 'hourly
+                           #:interval 4
+                           #:byhour '(7 11 15 19))
+               (moment 1997 9 2 9 0)))))
+
+(test-case "test-minutely-bad-rrule"
+  (check-exn exn:fail:contract?
+             (thunk
+              (in-rrule
+               (make-rrule #:freq 'minutely
+                           #:interval 12
+                           #:byminute '(10 11 25 39 50))
+               (moment 1997 9 2 9 0)))))
+
+(test-case "test-secondly-bad-rrule"
+  (check-exn exn:fail:contract?
+             (thunk
+              (in-rrule
+               (make-rrule #:freq 'secondly
+                           #:interval 10
+                           #:bysecond '(2 15 37 42 59))
+               (moment 1997 9 2 9 0)))))
+
+(test-case "test-minutely-bad-combo-rrule"
+  ;; Certain values of `interval` in `rrule` when combined with certain
+  ;; values of `byhour` create rules which apply to no valid dates.
+  (check-exn exn:fail:contract?
+             (thunk
+              (in-rrule
+               (make-rrule #:freq 'minutely
+                           #:interval 120
+                           #:byhour '(10 12 14 16)
+                           #:count 2)
+               (moment 1997 9 2 9 0)))))
+
+(test-case "test-secondly-bad-combo-rrule"
+  (check-exn exn:fail:contract?
+             (thunk
+              (in-rrule
+               (make-rrule #:freq 'secondly
+                           #:interval 360
+                           #:byminute '(10 28 49)
+                           #:count 4)
+               (moment 1997 9 2 9 0))))
+  (check-exn exn:fail:contract?
+             (thunk
+              (in-rrule
+               (make-rrule #:freq 'secondly
+                           #:interval 43200
+                           #:byhour '(2 10 18 23)
+                           #:count 4)
+               (moment 1997 9 2 9 0)))))
+
+(test-case "test-bad-until-count-rrule"
+  ;; See rfc-5545 3.3.10
+  (check-exn exn:fail:contract?
+             (thunk
+              (make-rrule #:freq 'daily
+                          #:count 3
+                          #:until (moment 1997 9 4 9 0)))))
+
+(test-case "test-until-not-matching"
+  (check-rrule-list (make-rrule #:freq 'daily
+                                #:until (moment 1997 9 5 8 0))
+                    (moment 1997 9 2 9 0)
+                    (list (moment 1997 9 2 9 0)
+                          (moment 1997 9 3 9 0)
+                          (moment 1997 9 4 9 0))))
+
+(test-case "test-until-matching"
+  (check-rrule-list (make-rrule #:freq 'daily
+                                #:until (moment 1997 9 4 9 0))
+                    (moment 1997 9 2 9 0)
+                    (list (moment 1997 9 2 9 0)
+                          (moment 1997 9 3 9 0)
+                          (moment 1997 9 4 9 0))))
+
+(test-case "test-until-single"
+  (check-rrule-list (make-rrule #:freq 'daily
+                                #:until (moment 1997 9 2 9 0))
+                    (moment 1997 9 2 9 0)
+                    (list (moment 1997 9 2 9 0))))
+
+(test-case "test-until-empty"
+  (check-rrule-list (make-rrule #:freq 'daily
+                                #:until (moment 1997 9 1 9 0))
+                    (moment 1997 9 2 9 0)
+                    (list)))
+
+(test-case "test-until-with-date"
+  (check-rrule-list (make-rrule #:freq 'daily
+                                #:until date(1997 9 5))
+                    (moment 1997 9 2 9 0)
+                    (list (moment 1997 9 2 9 0)
+                          (moment 1997 9 3 9 0)
+                          (moment 1997 9 4 9 0))))
+
+(test-case "test-wk-st-interval-mo"
+  (check-rrule-list (make-rrule #:freq 'weekly
+                                #:count 3
+                                #:interval 2
+                                #:byday '(tuesday sunday)
+                                #:wkst 'monday)
+                    (moment 1997 9 2 9 0)
+                    (list (moment 1997 9 2 9 0)
+                          (moment 1997 9 7 9 0)
+                          (moment 1997 9 16 9 0))))
+
+(test-case "test-wk-st-interval-su"
+  (check-rrule-list (make-rrule #:freq 'weekly
+                                #:count 3
+                                #:interval 2
+                                #:byday '(tuesday sunday)
+                                #:wkst 'sunday)
+                    (moment 1997 9 2 9 0)
+                    (list (moment 1997 9 2 9 0)
+                          (moment 1997 9 14 9 0)
+                          (moment 1997 9 16 9 0))))
+
+(test-case "test-dt-start-is-date"
+  (check-rrule-list (make-rrule #:freq 'daily
+                                #:count 3)
+                    (date 1997 9 2)
+                    (list (moment 1997 9 2 0 0)
+                          (moment 1997 9 3 0 0)
+                          (moment 1997 9 4 0 0))))
+
+(test-case "test-dt-start-with-microseconds"
+  (define (μs->ns μs) (* 1000 μs))
+  (check-rrule-list (make-rrule #:freq 'daily
+                                #:count 3)
+                    (moment 1997 9 2 9 0 0 (μs->ns 500000))
+                    (list (moment 1997 9 2 9 0)
+                          (moment 1997 9 3 9 0)
+                          (moment 1997 9 4 9 0))))
+
+(test-case "test-get-item"
+  (check-equal?
+   (sequence-ref (in-rrule (make-rrule #:freq 'daily
+                                       #:count 3)
+                           (moment 1997 9 2 9 0))
+                 0)
+   (moment 1997 9 2 9 0)))
+
+(test-case "test-get-item-neg"
+  (check-equal?
+   (last (rrule->list (make-rrule #:freq 'daily
+                                  #:count 3)
+                      (moment 1997 9 2 9 0)))
+   (moment 1997 9 4 9 0)))
+
+(test-case "test-get-item-slice"
+  (check-equal?
+   (stream-take
+    (stream-tail (sequence->stream
+                  (in-rrule (make-rrule #:freq 'daily)
+                            (moment 1997 9 2 9 0)))
+                 1)
+    (- 2 1))
+   (list (moment 1997 9 3 9 0))))
+
+(test-case "test-get-item-slice-empty"
+  (check-equal?
+   (rrule->list (make-rrule #:freq 'daily
+                            #:count 3)
+                (moment 1997 9 2 9 0))
+   (list (moment 1997 9 2 9 0)
+         (moment 1997 9 3 9 0)
+         (moment 1997 9 4 9 0))))
+
+(test-case "test-get-item-slice-step"
+  (check-equal?
+   (take-right (rrule->list
+                (make-rrule #:freq 'daily
+                            #:count 3)
+                (moment 1997 9 2 9 0))
+               2)
+   (list (moment 1997 9 4 9 0)
+         (moment 1997 9 2 9 0))))
+
+(test-case "test-count"
+  (check-equal?
+   (sequence-length (in-rrule
+                     (make-rrule #:freq 'daily
+                                 #:count 3)
+                     (moment 1997 9 2 9 0)))
+   3))
+
+(test-case "test-count-zero"
+  (check-equal?
+   (sequence-length (in-rrule
+                     (make-rrule #:freq 'yearly
+                                 #:count 0)
+                     (moment 1997 9 2 9 0)))
+   0))
+
+(test-case "test-contains"
+  (check-equal?
+   (sequence-count (λ (x) (equal? x (moment 1997 9 3 9 0)))
+                   (in-rrule
+                    (make-rrule #:freq 'daily
+                                #:count 3)
+                    (moment 1997 9 2 9 0)))
+   1))
+
+(test-case "test-before"
+  (check-equal?
+   (for/last ([m (in-rrule (make-rrule #:freq 'daily)
+                           (moment 1997 9 2 9 0))]
+              #:when (moment<? m (moment 1997 9 5 9 0)))
+     m)
+   (moment 1997 9 4 9 0)))
+
+(test-case "test-before-inc"
+  (check-equal?
+   (for/last ([m (in-rrule (make-rrule #:freq 'daily)
+                           (moment 1997 9 2 9 0))]
+              #:when (moment<=? m (moment 1997 9 5 9 0)))
+     m)
+   (moment 1997 9 5 9 0)))
+
+(test-case "test-after"
+  (check-equal?
+   (for/first ([m (in-rrule (make-rrule #:freq 'daily)
+                            (moment 1997 9 2 9 0))]
+               #:when (moment>? m (moment 1997 9 4 9 0)))
+     m)
+   (moment 1997 9 5 9 0)))
+
+(test-case "test-after-inc"
+  (check-equal?
+   (for/first ([m (in-rrule (make-rrule #:freq 'daily)
+                            (moment 1997 9 2 9 0))]
+               #:when (moment>=? m (moment 1997 9 4 9 0)))
+     m)
+   (moment 1997 9 4 9 0)))
+
+(test-case "test-x-after"
+  (check-equal?
+   (stream-take (sequence->stream
+                 (sequence-filter
+                  (λ (m) (moment>? m (moment 1997 9 8 9 0)))
+                  (in-rrule (make-rrule #:freq 'daily)
+                            (moment 1997 9 2 9 0))))
+                12)
+   (list (moment 1997 9 9 9 0)
+         (moment 1997 9 10 9 0)
+         (moment 1997 9 11 9 0)
+         (moment 1997 9 12 9 0)
+         (moment 1997 9 13 9 0)
+         (moment 1997 9 14 9 0)
+         (moment 1997 9 15 9 0)
+         (moment 1997 9 16 9 0)
+         (moment 1997 9 17 9 0)
+         (moment 1997 9 18 9 0)
+         (moment 1997 9 19 9 0)
+         (moment 1997 9 20 9 0))))
+
+(test-case "test-x-after-inc"
+  (check-equal?
+   (stream-take (sequence->stream
+                 (sequence-filter
+                  (λ (m) (moment>=? m (moment 1997 9 8 9 0)))
+                  (in-rrule (make-rrule #:freq 'daily)
+                            (moment 1997 9 2 9 0))))
+                12)
+   (list (moment 1997 9 8 9 0)
+         (moment 1997 9 9 9 0)
+         (moment 1997 9 10 9 0)
+         (moment 1997 9 11 9 0)
+         (moment 1997 9 12 9 0)
+         (moment 1997 9 13 9 0)
+         (moment 1997 9 14 9 0)
+         (moment 1997 9 15 9 0)
+         (moment 1997 9 16 9 0)
+         (moment 1997 9 17 9 0)
+         (moment 1997 9 18 9 0)
+         (moment 1997 9 19 9 0))))
+
+(test-case "test-between"
+  (check-equal?
+   (for/list ([m (in-rrule (make-rrule #:freq 'daily)
+                           (moment 1997 9 2 9 0))]
+              #:when (and (moment<? (moment 1997 9 2 9 0) m)
+                          (moment<? m (moment 1997 9 6 9 0))))
+     m)
+   (list (moment 1997 9 3 9 0)
+         (moment 1997 9 4 9 0)
+         (moment 1997 9 5 9 0))))
+
+(test-case "test-between-inc"
+  (check-equal?
+   (for/list ([m (in-rrule (make-rrule #:freq 'daily)
+                           (moment 1997 9 2 9 0))]
+              #:when (and (moment<=? (moment 1997 9 2 9 0) m)
+                          (moment<=? m (moment 1997 9 6 9 0))))
+     m)
+   (list (moment 1997 9 2 9 0)
+         (moment 1997 9 3 9 0)
+         (moment 1997 9 4 9 0)
+         (moment 1997 9 5 9 0)
+         (moment 1997 9 6 9 0))))
+
+(test-case "test-cache-pre"
+  (check-equal?
+   (rrule->list
+    (make-rrule #:freq 'daily #:count 15)
+    (moment 1997 9 2 9 0))
+   (list (moment 1997 9 2 9 0)
+         (moment 1997 9 3 9 0)
+         (moment 1997 9 4 9 0)
+         (moment 1997 9 5 9 0)
+         (moment 1997 9 6 9 0)
+         (moment 1997 9 7 9 0)
+         (moment 1997 9 8 9 0)
+         (moment 1997 9 9 9 0)
+         (moment 1997 9 10 9 0)
+         (moment 1997 9 11 9 0)
+         (moment 1997 9 12 9 0)
+         (moment 1997 9 13 9 0)
+         (moment 1997 9 14 9 0)
+         (moment 1997 9 15 9 0)
+         (moment 1997 9 16 9 0))))
+
+;; TODO
+
+;; (test-case "test-str"
+;;     (list(rrulestr(
+;;                           "DTSTART:19970902T090000\n"
+;;                           "RRULE:FREQ=YEARLY;COUNT=3\n"
+;;                           ))
+;;                      [(moment 1997 9 2 9 0)
+;;                       (moment 1998 9 2 9 0)
+;;                       (moment 1999 9 2 9 0)])
+;;     )
+
+;; (test-case "test-str-with-tzid"
+;;     NYC = tz.gettz('America/New_York')
+;;     (list(rrulestr(
+;;                           "DTSTART;TZID=America/New_York:19970902T090000\n"
+;;                           "RRULE:FREQ=YEARLY;COUNT=3\n"
+;;                           ))
+;;                      [(moment 1997 9 2 9 0 tzinfo=NYC)
+;;                       (moment 1998 9 2 9 0 tzinfo=NYC)
+;;                       (moment 1999 9 2 9 0 tzinfo=NYC)])
+;;     )
+
+;; (test-case "test-str-with-tzid-mapping"
+;;     rrstr = ("DTSTART;TZID=Eastern:19970902T090000\n" +
+;;              "RRULE:FREQ=YEARLY;COUNT=3")
+;;     )
+
+;;     NYC = tz.gettz('America/New_York')
+;;     rr = rrulestr(rrstr tzids={'Eastern': NYC})
+;;     exp = [(moment 1997 9 2 9 0 tzinfo=NYC)
+;;            (moment 1998 9 2 9 0 tzinfo=NYC)
+;;            (moment 1999 9 2 9 0 tzinfo=NYC)]
+
+;;     (list(rr) exp)
+
+
+;; (test-case "test-str-with-tzid-callable"
+;;     rrstr = ('DTSTART;TZID=UTC+04:19970902T090000\n' +
+;;              'RRULE:FREQ=YEARLY;COUNT=3'))
+
+;;     TZ = tz.tzstr('UTC+04')
+;;     (test-case "parse-tzstr"
+;;         if tzstr is None:
+;;             raise ValueError('Invalid tzstr')
+;;             )
+
+;;         return tz.tzstr(tzstr)
+
+;;     rr = rrulestr(rrstr tzids=parse_tzstr)
+
+;;     exp = [(moment 1997 9 2 9 0 tzinfo=TZ)
+;;            (moment 1998 9 2 9 0 tzinfo=TZ)
+;;            (moment 1999 9 2 9 0 tzinfo=TZ)]
+
+;;     (list(rr) exp)
+
+
+;;     (test-case "test-str-with-tzid-callable-failure"
+;;     rrstr = ('DTSTART;TZID=America/New_York:19970902T090000\n' +
+;;              'RRULE:FREQ=YEARLY;COUNT=3'))
+
+;;     class TzInfoError(Exception):
+;;         pass
+
+;;     (test-case "tzinfos"
+;;         if tzstr == 'America/New_York':
+;;             raise TzInfoError('Invalid!')
+;;         return None
+;;         )
+
+;;     with self.assertRaises(TzInfoError):
+;;         rrulestr(rrstr tzids=tzinfos)
+
+;; (test-case "test-str-with-conflicting-tzid"
+;;     # RFC 5545 Section 3.3.5 FORM #2: DATE WITH UTC TIME
+;;     # https://tools.ietf.org/html/rfc5545#section-3.3.5
+;;     # The "TZID" property parameter MUST NOT be applied to DATE-TIME
+;;     with self.assertRaises(ValueError):
+;;         rrulestr("DTSTART;TZID=America/New_York:19970902T090000Z\n"+
+;;                  "RRULE:FREQ=YEARLY;COUNT=3\n")
+;;         )
+
+;; (test-case "test-str-type"
+;;     (isinstance(rrulestr(
+;;                           "DTSTART:19970902T090000\n"
+;;                           "RRULE:FREQ=YEARLY;COUNT=3\n"
+;;                           ) rrule) True)
+;;     )
+
+;; (test-case "test-str-force-set-type"
+;;     (isinstance(rrulestr(
+;;                           "DTSTART:19970902T090000\n"
+;;                           "RRULE:FREQ=YEARLY;COUNT=3\n"
+;;                            forceset=True) rruleset) True)
+;;     )
+
+;; (test-case "test-str-set-type"
+;;     (isinstance(rrulestr(
+;;                           "DTSTART:19970902T090000\n"
+;;                           "RRULE:FREQ=YEARLY;COUNT=2;BYDAY=TU\n"
+;;                           "RRULE:FREQ=YEARLY;COUNT=1;BYDAY=TH\n"
+;;                           ) rruleset) True)
+;;     )
+
+;; (test-case "test-str-case"
+;;     (list(rrulestr(
+;;                           "dtstart:19970902T090000\n"
+;;                           "rrule:freq=yearly;count=3\n"
+;;                           ))
+;;                      [(moment 1997 9 2 9 0)
+;;                       (moment 1998 9 2 9 0)
+;;                       (moment 1999 9 2 9 0)])
+;;     )
+
+;; (test-case "test-str-spaces"
+;;     (list(rrulestr(
+;;                           " DTSTART:19970902T090000 "
+;;                           " RRULE:FREQ=YEARLY;COUNT=3 "
+;;                           ))
+;;                      [(moment 1997 9 2 9 0)
+;;                       (moment 1998 9 2 9 0)
+;;                       (moment 1999 9 2 9 0)])
+;;     )
+
+;; (test-case "test-str-spaces-and-lines"
+;;     (list(rrulestr(
+;;                           " DTSTART:19970902T090000 \n"
+;;                           " \n"
+;;                           " RRULE:FREQ=YEARLY;COUNT=3 \n"
+;;                           ))
+;;                      [(moment 1997 9 2 9 0)
+;;                       (moment 1998 9 2 9 0)
+;;                       (moment 1999 9 2 9 0)])
+;;     )
+
+;; (test-case "test-str-no-dt-start"
+;;     (list(rrulestr(
+;;                           "RRULE:FREQ=YEARLY;COUNT=3\n"
+;;                            dtstart=(moment 1997 9 2 9 0)))
+;;                      [(moment 1997 9 2 9 0)
+;;                       (moment 1998 9 2 9 0)
+;;                       (moment 1999 9 2 9 0)])
+;;     )
+
+;; (test-case "test-str-value-only"
+;;     (list(rrulestr(
+;;                           "FREQ=YEARLY;COUNT=3\n"
+;;                            dtstart=(moment 1997 9 2 9 0)))
+;;                      [(moment 1997 9 2 9 0)
+;;                       (moment 1998 9 2 9 0)
+;;                       (moment 1999 9 2 9 0)])
+;;     )
+
+;; (test-case "test-str-unfold"
+;;     (list(rrulestr(
+;;                           "FREQ=YEA\n RLY;COUNT=3\n" unfold=True
+;;                           dtstart=(moment 1997 9 2 9 0)))
+;;                      [(moment 1997 9 2 9 0)
+;;                       (moment 1998 9 2 9 0)
+;;                       (moment 1999 9 2 9 0)])
+;;     )
+
+;; (test-case "test-str-set"
+;;     (list(rrulestr(
+;;                           "DTSTART:19970902T090000\n"
+;;                           "RRULE:FREQ=YEARLY;COUNT=2;BYDAY=TU\n"
+;;                           "RRULE:FREQ=YEARLY;COUNT=1;BYDAY=TH\n"
+;;                           ))
+;;                      [(moment 1997 9 2 9 0)
+;;                       (moment 1997 9 4 9 0)
+;;                       (moment 1997 9 9 9 0)])
+;;     )
+
+;; (test-case "test-str-set-date"
+;;     (list(rrulestr(
+;;                           "DTSTART:19970902T090000\n"
+;;                           "RRULE:FREQ=YEARLY;COUNT=1;BYDAY=TU\n"
+;;                           "RDATE:19970904T090000\n"
+;;                           "RDATE:19970909T090000\n"
+;;                           ))
+;;                      [(moment 1997 9 2 9 0)
+;;                       (moment 1997 9 4 9 0)
+;;                       (moment 1997 9 9 9 0)])
+;;     )
+
+;; (test-case "test-str-set-ex-rule"
+;;     (list(rrulestr(
+;;                           "DTSTART:19970902T090000\n"
+;;                           "RRULE:FREQ=YEARLY;COUNT=6;BYDAY=TUTH\n"
+;;                           "EXRULE:FREQ=YEARLY;COUNT=3;BYDAY=TH\n"
+;;                           ))
+;;                      [(moment 1997 9 2 9 0)
+;;                       (moment 1997 9 9 9 0)
+;;                       (moment 1997 9 16 9 0)])
+;;     )
+
+;; (test-case "test-str-set-ex-date"
+;;     (list(rrulestr(
+;;                           "DTSTART:19970902T090000\n"
+;;                           "RRULE:FREQ=YEARLY;COUNT=6;BYDAY=TUTH\n"
+;;                           "EXDATE:19970904T090000\n"
+;;                           "EXDATE:19970911T090000\n"
+;;                           "EXDATE:19970918T090000\n"
+;;                           ))
+;;                      [(moment 1997 9 2 9 0)
+;;                       (moment 1997 9 9 9 0)
+;;                       (moment 1997 9 16 9 0)])
+;;     )
+
+;; (test-case "test-str-set-ex-date-multiple"
+;;     rrstr = ("DTSTART:19970902T090000\n"
+;;              "RRULE:FREQ=YEARLY;COUNT=6;BYDAY=TUTH\n"
+;;              "EXDATE:19970904T09000019970911T09000019970918T090000\n")
+;;     )
+
+;;     rr = rrulestr(rrstr)
+;;     assert list(rr) == [(moment 1997 9 2 9 0)
+;;                         (moment 1997 9 9 9 0)
+;;                         (moment 1997 9 16 9 0)]
+
+;; (test-case "test-str-set-ex-date-with-tzid"
+;;     BXL = tz.gettz('Europe/Brussels')
+;;     rr = rrulestr("DTSTART;TZID=Europe/Brussels:19970902T090000\n"
+;;                   "RRULE:FREQ=YEARLY;COUNT=6;BYDAY=TUTH\n"
+;;                   "EXDATE;TZID=Europe/Brussels:19970904T090000\n"
+;;                   "EXDATE;TZID=Europe/Brussels:19970911T090000\n"
+;;                   "EXDATE;TZID=Europe/Brussels:19970918T090000\n")
+;;     )
+
+;;     assert list(rr) == [(moment 1997 9 2 9 0 tzinfo=BXL)
+;;                         (moment 1997 9 9 9 0 tzinfo=BXL)
+;;                         (moment 1997 9 16 9 0 tzinfo=BXL)]
+
+;; (test-case "test-str-set-ex-date-value-date-time-no-tzid"
+;;     rrstr = '\n'.join([
+;;         "DTSTART:19970902T090000"
+;;         "RRULE:FREQ=YEARLY;COUNT=4;BYDAY=TUTH"
+;;         "EXDATE;VALUE=DATE-TIME:19970902T090000"
+;;         "EXDATE;VALUE=DATE-TIME:19970909T090000"
+;;     ])
+;;     )
+
+;;     rr = rrulestr(rrstr)
+;;     assert list(rr) == [(moment 1997 9 4 9) (moment 1997 9 11 9)]
+
+;; (test-case "test-str-set-ex-date-value-mix-date-time-no-tzid"
+;;     rrstr = '\n'.join([
+;;         "DTSTART:19970902T090000"
+;;         "RRULE:FREQ=YEARLY;COUNT=4;BYDAY=TUTH"
+;;         "EXDATE;VALUE=DATE-TIME:19970902T090000"
+;;         "EXDATE:19970909T090000"
+;;     ])
+;;     )
+
+;;     rr = rrulestr(rrstr)
+;;     assert list(rr) == [(moment 1997 9 4 9) (moment 1997 9 11 9)]
+
+;; (test-case "test-str-set-ex-date-value-date-time-with-tzid"
+;;     BXL = tz.gettz('Europe/Brussels')
+;;     rrstr = '\n'.join([
+;;         "DTSTART;VALUE=DATE-TIME;TZID=Europe/Brussels:19970902T090000"
+;;         "RRULE:FREQ=YEARLY;COUNT=4;BYDAY=TUTH"
+;;         "EXDATE;VALUE=DATE-TIME;TZID=Europe/Brussels:19970902T090000"
+;;         "EXDATE;VALUE=DATE-TIME;TZID=Europe/Brussels:19970909T090000"
+;;     ])
+;;     )
+
+;;     rr = rrulestr(rrstr)
+;;     assert list(rr) == [(moment 1997 9 4 9 tzinfo=BXL)
+;;                         (moment 1997 9 11 9 tzinfo=BXL)]
+
+;; (test-case "test-str-set-ex-date-value-date"
+;;     rrstr = '\n'.join([
+;;         "DTSTART;VALUE=DATE:19970902"
+;;         "RRULE:FREQ=YEARLY;COUNT=4;BYDAY=TUTH"
+;;         "EXDATE;VALUE=DATE:19970902"
+;;         "EXDATE;VALUE=DATE:19970909"
+;;     ])
+;;     )
+
+;;     rr = rrulestr(rrstr)
+;;     assert list(rr) == [(moment 1997 9 4) (moment 1997 9 11)]
+
+;; (test-case "test-str-set-date-and-ex-date"
+;;     (list(rrulestr(
+;;                           "DTSTART:19970902T090000\n"
+;;                           "RDATE:19970902T090000\n"
+;;                           "RDATE:19970904T090000\n"
+;;                           "RDATE:19970909T090000\n"
+;;                           "RDATE:19970911T090000\n"
+;;                           "RDATE:19970916T090000\n"
+;;                           "RDATE:19970918T090000\n"
+;;                           "EXDATE:19970904T090000\n"
+;;                           "EXDATE:19970911T090000\n"
+;;                           "EXDATE:19970918T090000\n"
+;;                           ))
+;;                      [(moment 1997 9 2 9 0)
+;;                       (moment 1997 9 9 9 0)
+;;                       (moment 1997 9 16 9 0)])
+;;     )
+
+;; (test-case "test-str-set-date-and-ex-rule"
+;;     (list(rrulestr(
+;;                           "DTSTART:19970902T090000\n"
+;;                           "RDATE:19970902T090000\n"
+;;                           "RDATE:19970904T090000\n"
+;;                           "RDATE:19970909T090000\n"
+;;                           "RDATE:19970911T090000\n"
+;;                           "RDATE:19970916T090000\n"
+;;                           "RDATE:19970918T090000\n"
+;;                           "EXRULE:FREQ=YEARLY;COUNT=3;BYDAY=TH\n"
+;;                           ))
+;;                      [(moment 1997 9 2 9 0)
+;;                       (moment 1997 9 9 9 0)
+;;                       (moment 1997 9 16 9 0)])
+;;     )
+
+;; (test-case "test-str-keywords"
+;;     (list(rrulestr(
+;;                           "DTSTART:19970902T090000\n"
+;;                           "RRULE:FREQ=YEARLY;COUNT=3;INTERVAL=3;"
+;;                                 "BYMONTH=3;byday=TH;BYMONTHDAY=3;"
+;;                                 "BYHOUR=3;BYMINUTE=3;BYSECOND=3\n"
+;;                           ))
+;;                      [(moment 2033 3 3 3 3 3)
+;;                       (moment 2039 3 3 3 3 3)
+;;                       (moment 2072 3 3 3 3 3)])
+;;     )
+
+;; (test-case "test-str-n-week-day"
+;;     (list(rrulestr(
+;;                           "DTSTART:19970902T090000\n"
+;;                           "RRULE:FREQ=YEARLY;COUNT=3;BYDAY=1TU-1TH\n"
+;;                           ))
+;;                      [(moment 1997 12 25 9 0)
+;;                       (moment 1998 1 6 9 0)
+;;                       (moment 1998 12 31 9 0)])
+;;     )
+
+;; (test-case "test-str-until"
+;;     (list(rrulestr(
+;;                           "DTSTART:19970902T090000\n"
+;;                           "RRULE:FREQ=YEARLY;"
+;;                           "UNTIL=19990101T000000;BYDAY=1TU-1TH\n"
+;;                           ))
+;;                      [(moment 1997 12 25 9 0)
+;;                       (moment 1998 1 6 9 0)
+;;                       (moment 1998 12 31 9 0)])
+;;     )
+
+;; (test-case "test-str-value-datetime"
+;;     rr = rrulestr("DTSTART;VALUE=DATE-TIME:19970902T090000\n"
+;;                    "RRULE:FREQ=YEARLY;COUNT=2")
+;;     )
+
+;;     (list(rr) [(moment 1997 9 2 9 0 0)
+;;                                 (moment 1998 9 2 9 0 0)])
+
+;; (test-case "test-str-value-date"
+;;     rr = rrulestr("DTSTART;VALUE=DATE:19970902\n"
+;;                    "RRULE:FREQ=YEARLY;COUNT=2")
+;;     )
+
+;;     (list(rr) [(moment 1997 9 2 0 0 0)
+;;                                 (moment 1998 9 2 0 0 0)])
+
+;; (test-case "test-str-multiple-dt-start-comma"
+;;     with pytest.raises(ValueError):
+;;         rr = rrulestr("DTSTART:19970101T00000019970202T000000\n"
+;;                       "RRULE:FREQ=YEARLY;COUNT=1")
+;;         )
+
+;; (test-case "test-str-invalid-until"
+;;     with self.assertRaises(ValueError):
+;;         list(rrulestr("DTSTART:19970902T090000\n"
+;;                       "RRULE:FREQ=YEARLY;"
+;;                       "UNTIL=TheCowsComeHome;BYDAY=1TU-1TH\n"))
+;;         )
+
+;; (test-case "test-str-until-must-be-utc"
+;;     with self.assertRaises(ValueError):
+;;         list(rrulestr("DTSTART;TZID=America/New_York:19970902T090000\n"
+;;                       "RRULE:FREQ=YEARLY;"
+;;                       "UNTIL=19990101T000000;BYDAY=1TU-1TH\n"))
+;;         )
+
+;; (test-case "test-str-until-with-tz"
+;;     NYC = tz.gettz('America/New_York')
+;;     rr = list(rrulestr("DTSTART;TZID=America/New_York:19970101T000000\n"
+;;                       "RRULE:FREQ=YEARLY;"
+;;                       "UNTIL=19990101T000000Z\n"))
+;;     (list(rr) [(moment 1997 1 1 0 0 0 tzinfo=NYC)
+;;                                 (moment 1998 1 1 0 0 0 tzinfo=NYC)])
+;;     )
+
+;; (test-case "test-str-empty-by-day"
+;;     with self.assertRaises(ValueError):
+;;         list(rrulestr("DTSTART:19970902T090000\n"
+;;                       "FREQ=WEEKLY;"
+;;                       "BYDAY=;"         # This part is invalid
+;;                       "WKST=SU"))
+;;         )
+
+;; (test-case "test-str-invalid-by-day"
+;;     with self.assertRaises(ValueError):
+;;         list(rrulestr("DTSTART:19970902T090000\n"
+;;                       "FREQ=WEEKLY;"
+;;                       "BYDAY=-1OK;"         # This part is invalid
+;;                       "WKST=SU"))
+;;         )
+
+;; (test-case "test-bad-by-set-pos"
+;;     self.assertRaises(ValueError
+;;                       rrule MONTHLY
+;;                              count=1
+;;                              bysetpos=0
+;;                              dtstart=(moment 1997 9 2 9 0))
+;;     )
+
+;; (test-case "test-bad-by-set-pos-many"
+;;     self.assertRaises(ValueError
+;;                       rrule MONTHLY
+;;                              count=1
+;;                              bysetpos=(-1 0 1))
+;;                              dtstart=(moment 1997 9 2 9 0)
+;;                              )
