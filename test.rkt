@@ -2412,430 +2412,156 @@
          (moment 1997 9 15 9 0)
          (moment 1997 9 16 9 0))))
 
-;; TODO
+(test-case "test-str"
+  (check-equal?
+   (rrule->list
+    (parse-rrule "FREQ=YEARLY;COUNT=3")
+    (moment 1997 9 2 9))
+   (list (moment 1997 9 2 9 0)
+         (moment 1998 9 2 9 0)
+         (moment 1999 9 2 9 0))))
 
-;; (test-case "test-str"
-;;     (list(rrulestr(
-;;                           "DTSTART:19970902T090000\n"
-;;                           "RRULE:FREQ=YEARLY;COUNT=3\n"
-;;                           ))
-;;                      [(moment 1997 9 2 9 0)
-;;                       (moment 1998 9 2 9 0)
-;;                       (moment 1999 9 2 9 0)])
-;;     )
+(test-case "test-str-with-tzid"
+  (check-equal?
+   (rrule->list
+    (parse-rrule "FREQ=YEARLY;COUNT=3")
+    (moment 1997 9 2 9 #:tz "America/New_York"))
+   (list (moment 1997 9 2 9 0 #:tz "America/New_York")
+         (moment 1998 9 2 9 0 #:tz "America/New_York")
+         (moment 1999 9 2 9 0 #:tz "America/New_York"))))
 
-;; (test-case "test-str-with-tzid"
-;;     NYC = tz.gettz('America/New_York')
-;;     (list(rrulestr(
-;;                           "DTSTART;TZID=America/New_York:19970902T090000\n"
-;;                           "RRULE:FREQ=YEARLY;COUNT=3\n"
-;;                           ))
-;;                      [(moment 1997 9 2 9 0 tzinfo=NYC)
-;;                       (moment 1998 9 2 9 0 tzinfo=NYC)
-;;                       (moment 1999 9 2 9 0 tzinfo=NYC)])
-;;     )
-
-;; (test-case "test-str-with-tzid-mapping"
-;;     rrstr = ("DTSTART;TZID=Eastern:19970902T090000\n" +
-;;              "RRULE:FREQ=YEARLY;COUNT=3")
-;;     )
-
-;;     NYC = tz.gettz('America/New_York')
-;;     rr = rrulestr(rrstr tzids={'Eastern': NYC})
-;;     exp = [(moment 1997 9 2 9 0 tzinfo=NYC)
-;;            (moment 1998 9 2 9 0 tzinfo=NYC)
-;;            (moment 1999 9 2 9 0 tzinfo=NYC)]
-
-;;     (list(rr) exp)
-
-
-;; (test-case "test-str-with-tzid-callable"
-;;     rrstr = ('DTSTART;TZID=UTC+04:19970902T090000\n' +
-;;              'RRULE:FREQ=YEARLY;COUNT=3'))
-
-;;     TZ = tz.tzstr('UTC+04')
-;;     (test-case "parse-tzstr"
-;;         if tzstr is None:
-;;             raise ValueError('Invalid tzstr')
-;;             )
-
-;;         return tz.tzstr(tzstr)
-
-;;     rr = rrulestr(rrstr tzids=parse_tzstr)
-
-;;     exp = [(moment 1997 9 2 9 0 tzinfo=TZ)
-;;            (moment 1998 9 2 9 0 tzinfo=TZ)
-;;            (moment 1999 9 2 9 0 tzinfo=TZ)]
-
-;;     (list(rr) exp)
-
-
-;;     (test-case "test-str-with-tzid-callable-failure"
-;;     rrstr = ('DTSTART;TZID=America/New_York:19970902T090000\n' +
-;;              'RRULE:FREQ=YEARLY;COUNT=3'))
-
-;;     class TzInfoError(Exception):
-;;         pass
-
-;;     (test-case "tzinfos"
-;;         if tzstr == 'America/New_York':
-;;             raise TzInfoError('Invalid!')
-;;         return None
-;;         )
-
-;;     with self.assertRaises(TzInfoError):
-;;         rrulestr(rrstr tzids=tzinfos)
-
+;; TODO: separate rrule/dtstart module for parsing?
 ;; (test-case "test-str-with-conflicting-tzid"
 ;;     # RFC 5545 Section 3.3.5 FORM #2: DATE WITH UTC TIME
 ;;     # https://tools.ietf.org/html/rfc5545#section-3.3.5
 ;;     # The "TZID" property parameter MUST NOT be applied to DATE-TIME
 ;;     with self.assertRaises(ValueError):
-;;         rrulestr("DTSTART;TZID=America/New_York:19970902T090000Z\n"+
-;;                  "RRULE:FREQ=YEARLY;COUNT=3\n")
+;;         parse-rrule("DTSTART;TZID=America/New_York:19970902T090000Z\n"+
+;;                  "FREQ=YEARLY;COUNT=3\n")
 ;;         )
 
-;; (test-case "test-str-type"
-;;     (isinstance(rrulestr(
-;;                           "DTSTART:19970902T090000\n"
-;;                           "RRULE:FREQ=YEARLY;COUNT=3\n"
-;;                           ) rrule) True)
-;;     )
+(test-case "test-str-type"
+  (check-not-false (parse-rrule "FREQ=YEARLY;COUNT=3"))
+  (check-false (parse-rrule "FREQ=FOO")))
 
-;; (test-case "test-str-force-set-type"
-;;     (isinstance(rrulestr(
-;;                           "DTSTART:19970902T090000\n"
-;;                           "RRULE:FREQ=YEARLY;COUNT=3\n"
-;;                            forceset=True) rruleset) True)
-;;     )
+(test-case "test-str-case"
+  (check-equal?
+   (rrule->list
+    (parse-rrule "freq=yearly;count=3")
+    (moment (1997 9 2 9)))
+   (list (moment 1997 9 2 9 0)
+         (moment 1998 9 2 9 0)
+         (moment 1999 9 2 9 0))))
 
-;; (test-case "test-str-set-type"
-;;     (isinstance(rrulestr(
-;;                           "DTSTART:19970902T090000\n"
-;;                           "RRULE:FREQ=YEARLY;COUNT=2;BYDAY=TU\n"
-;;                           "RRULE:FREQ=YEARLY;COUNT=1;BYDAY=TH\n"
-;;                           ) rruleset) True)
-;;     )
+(test-case "test-str-spaces"
+  (check-equal?
+   (rrule->list
+    (parse-rrule " FREQ=YEARLY;COUNT=3 ")
+    (moment 1997 9 2 9))
+   (list (moment 1997 9 2 9 0)
+         (moment 1998 9 2 9 0)
+         (moment 1999 9 2 9 0))))
 
-;; (test-case "test-str-case"
-;;     (list(rrulestr(
-;;                           "dtstart:19970902T090000\n"
-;;                           "rrule:freq=yearly;count=3\n"
-;;                           ))
-;;                      [(moment 1997 9 2 9 0)
-;;                       (moment 1998 9 2 9 0)
-;;                       (moment 1999 9 2 9 0)])
-;;     )
+(test-case "test-str-spaces-and-lines"
+  (check-equal?
+   (rrule->list
+    (parse-rrule "\nFREQ=YEARLY;COUNT=3\n")
+    (moment 1997 9 2 9))
+   (list (moment 1997 9 2 9 0)
+         (moment 1998 9 2 9 0)
+         (moment 1999 9 2 9 0))))
 
-;; (test-case "test-str-spaces"
-;;     (list(rrulestr(
-;;                           " DTSTART:19970902T090000 "
-;;                           " RRULE:FREQ=YEARLY;COUNT=3 "
-;;                           ))
-;;                      [(moment 1997 9 2 9 0)
-;;                       (moment 1998 9 2 9 0)
-;;                       (moment 1999 9 2 9 0)])
-;;     )
+(test-case "test-str-keywords"
+  (check-equal?
+   (rrule->list
+    (parse-rrule (~a "FREQ=YEARLY;COUNT=3;INTERVAL=3;"
+                     "BYMONTH=3;byday=TH;BYMONTHDAY=3;"
+                     "BYHOUR=3;BYMINUTE=3;BYSECOND=3\n"))
+    (moment 1997 9 2 9))
+   (list (moment 2033 3 3 3 3 3)
+         (moment 2039 3 3 3 3 3)
+         (moment 2072 3 3 3 3 3))))
 
-;; (test-case "test-str-spaces-and-lines"
-;;     (list(rrulestr(
-;;                           " DTSTART:19970902T090000 \n"
-;;                           " \n"
-;;                           " RRULE:FREQ=YEARLY;COUNT=3 \n"
-;;                           ))
-;;                      [(moment 1997 9 2 9 0)
-;;                       (moment 1998 9 2 9 0)
-;;                       (moment 1999 9 2 9 0)])
-;;     )
+(test-case "test-str-n-week-day"
+  (check-equal?
+   (rrule->list
+    (parse-rrule "FREQ=YEARLY;COUNT=3;BYDAY=1TU-1TH\n")
+    (moment 1997 9 2 9))
+   (list (moment 1997 12 25 9 0)
+         (moment 1998 1 6 9 0)
+         (moment 1998 12 31 9 0))))
 
-;; (test-case "test-str-no-dt-start"
-;;     (list(rrulestr(
-;;                           "RRULE:FREQ=YEARLY;COUNT=3\n"
-;;                            dtstart=(moment 1997 9 2 9 0)))
-;;                      [(moment 1997 9 2 9 0)
-;;                       (moment 1998 9 2 9 0)
-;;                       (moment 1999 9 2 9 0)])
-;;     )
+(test-case "test-str-until"
+  (check-equal?
+   (rrule->list
+    ;; The value of the UNTIL rule part MUST have the same value type as the
+    ;; "DTSTART" property.  Furthermore, if the "DTSTART" property is specified
+    ;; as a date with local time, then the UNTIL rule part MUST also be
+    ;; specified as a date with local time.
+    (parse-rrule "FREQ=YEARLY;UNTIL=19990101T000000;BYDAY=1TU-1TH\n")
+    (moment 1997 9 2 9))
+   (list (moment 1997 12 25 9 0)
+         (moment 1998 1 6 9 0)
+         (moment 1998 12 31 9 0))))
 
-;; (test-case "test-str-value-only"
-;;     (list(rrulestr(
-;;                           "FREQ=YEARLY;COUNT=3\n"
-;;                            dtstart=(moment 1997 9 2 9 0)))
-;;                      [(moment 1997 9 2 9 0)
-;;                       (moment 1998 9 2 9 0)
-;;                       (moment 1999 9 2 9 0)])
-;;     )
+(test-case "test-str-value-date"
+  (check-equal?
+   (rrule->list
+    (parse-rrule "FREQ=YEARLY;COUNT=2")
+    (date 1997 9 2))
+   (list (moment 1997 9 2 0 0 0)
+         (moment 1998 9 2 0 0 0))))
 
-;; (test-case "test-str-unfold"
-;;     (list(rrulestr(
-;;                           "FREQ=YEA\n RLY;COUNT=3\n" unfold=True
-;;                           dtstart=(moment 1997 9 2 9 0)))
-;;                      [(moment 1997 9 2 9 0)
-;;                       (moment 1998 9 2 9 0)
-;;                       (moment 1999 9 2 9 0)])
-;;     )
+(test-case "test-str-invalid-until"
+  (check-false
+   (parse-rrule "FREQ=YEARLY;UNTIL=TheCowsComeHome;BYDAY=1TU-1TH\n")))
 
-;; (test-case "test-str-set"
-;;     (list(rrulestr(
-;;                           "DTSTART:19970902T090000\n"
-;;                           "RRULE:FREQ=YEARLY;COUNT=2;BYDAY=TU\n"
-;;                           "RRULE:FREQ=YEARLY;COUNT=1;BYDAY=TH\n"
-;;                           ))
-;;                      [(moment 1997 9 2 9 0)
-;;                       (moment 1997 9 4 9 0)
-;;                       (moment 1997 9 9 9 0)])
-;;     )
+(test-case "test-str-until-must-be-utc"
+  (check-exn
+   exn:fail:contract?
+   (thunk
+    (rrule->list
+    ;; If the "DTSTART" property is specified as a date with UTC time or a date
+    ;; with local time and time zone reference, then the UNTIL rule part MUST be
+    ;; specified as a date with UTC time.
+    (parse-rrule "FREQ=YEARLY;UNTIL=19990101T000000Z;BYDAY=1TU,-1TH")
+    (moment 1997 1 1 0 0 0 #:tz "America/New_York")))))
 
-;; (test-case "test-str-set-date"
-;;     (list(rrulestr(
-;;                           "DTSTART:19970902T090000\n"
-;;                           "RRULE:FREQ=YEARLY;COUNT=1;BYDAY=TU\n"
-;;                           "RDATE:19970904T090000\n"
-;;                           "RDATE:19970909T090000\n"
-;;                           ))
-;;                      [(moment 1997 9 2 9 0)
-;;                       (moment 1997 9 4 9 0)
-;;                       (moment 1997 9 9 9 0)])
-;;     )
+(test-case "test-str-until-with-tz"
+  (check-equal?
+   (rrule->list
+    (parse-rrule "FREQ=YEARLY;UNTIL=19990101T000000Z")
+    (moment 1997 1 1 0 0 0 #:tz "America/New_York"))
+   (list
+    (moment 1997 1 1 0 0 0 #:tz "America/New_York")
+    (moment 1998 1 1 0 0 0 #:tz "America/New_York"))))
 
-;; (test-case "test-str-set-ex-rule"
-;;     (list(rrulestr(
-;;                           "DTSTART:19970902T090000\n"
-;;                           "RRULE:FREQ=YEARLY;COUNT=6;BYDAY=TUTH\n"
-;;                           "EXRULE:FREQ=YEARLY;COUNT=3;BYDAY=TH\n"
-;;                           ))
-;;                      [(moment 1997 9 2 9 0)
-;;                       (moment 1997 9 9 9 0)
-;;                       (moment 1997 9 16 9 0)])
-;;     )
+(test-case "test-str-empty-by-day"
+  (check-false
+   (parse-rrule
+    (~a "FREQ=WEEKLY;"
+        "BYDAY=;"         ;; This part is invalid
+        "WKST=SU"))))
 
-;; (test-case "test-str-set-ex-date"
-;;     (list(rrulestr(
-;;                           "DTSTART:19970902T090000\n"
-;;                           "RRULE:FREQ=YEARLY;COUNT=6;BYDAY=TUTH\n"
-;;                           "EXDATE:19970904T090000\n"
-;;                           "EXDATE:19970911T090000\n"
-;;                           "EXDATE:19970918T090000\n"
-;;                           ))
-;;                      [(moment 1997 9 2 9 0)
-;;                       (moment 1997 9 9 9 0)
-;;                       (moment 1997 9 16 9 0)])
-;;     )
+(test-case "test-str-invalid-by-day"
+  (check-false
+   (parse-rrule
+    (~a
+     "FREQ=WEEKLY;"
+     "BYDAY=-1OK;"         ;; This part is invalid
+     "WKST=SU"))))
 
-;; (test-case "test-str-set-ex-date-multiple"
-;;     rrstr = ("DTSTART:19970902T090000\n"
-;;              "RRULE:FREQ=YEARLY;COUNT=6;BYDAY=TUTH\n"
-;;              "EXDATE:19970904T09000019970911T09000019970918T090000\n")
-;;     )
+(test-case "test-bad-by-set-pos"
+  (check-exn
+   exn:fail:contract?
+   (thunk
+    (make-rrule #:freq 'monthly
+                #:count 1
+                #:bysetpos '(0)))))
 
-;;     rr = rrulestr(rrstr)
-;;     assert list(rr) == [(moment 1997 9 2 9 0)
-;;                         (moment 1997 9 9 9 0)
-;;                         (moment 1997 9 16 9 0)]
-
-;; (test-case "test-str-set-ex-date-with-tzid"
-;;     BXL = tz.gettz('Europe/Brussels')
-;;     rr = rrulestr("DTSTART;TZID=Europe/Brussels:19970902T090000\n"
-;;                   "RRULE:FREQ=YEARLY;COUNT=6;BYDAY=TUTH\n"
-;;                   "EXDATE;TZID=Europe/Brussels:19970904T090000\n"
-;;                   "EXDATE;TZID=Europe/Brussels:19970911T090000\n"
-;;                   "EXDATE;TZID=Europe/Brussels:19970918T090000\n")
-;;     )
-
-;;     assert list(rr) == [(moment 1997 9 2 9 0 tzinfo=BXL)
-;;                         (moment 1997 9 9 9 0 tzinfo=BXL)
-;;                         (moment 1997 9 16 9 0 tzinfo=BXL)]
-
-;; (test-case "test-str-set-ex-date-value-date-time-no-tzid"
-;;     rrstr = '\n'.join([
-;;         "DTSTART:19970902T090000"
-;;         "RRULE:FREQ=YEARLY;COUNT=4;BYDAY=TUTH"
-;;         "EXDATE;VALUE=DATE-TIME:19970902T090000"
-;;         "EXDATE;VALUE=DATE-TIME:19970909T090000"
-;;     ])
-;;     )
-
-;;     rr = rrulestr(rrstr)
-;;     assert list(rr) == [(moment 1997 9 4 9) (moment 1997 9 11 9)]
-
-;; (test-case "test-str-set-ex-date-value-mix-date-time-no-tzid"
-;;     rrstr = '\n'.join([
-;;         "DTSTART:19970902T090000"
-;;         "RRULE:FREQ=YEARLY;COUNT=4;BYDAY=TUTH"
-;;         "EXDATE;VALUE=DATE-TIME:19970902T090000"
-;;         "EXDATE:19970909T090000"
-;;     ])
-;;     )
-
-;;     rr = rrulestr(rrstr)
-;;     assert list(rr) == [(moment 1997 9 4 9) (moment 1997 9 11 9)]
-
-;; (test-case "test-str-set-ex-date-value-date-time-with-tzid"
-;;     BXL = tz.gettz('Europe/Brussels')
-;;     rrstr = '\n'.join([
-;;         "DTSTART;VALUE=DATE-TIME;TZID=Europe/Brussels:19970902T090000"
-;;         "RRULE:FREQ=YEARLY;COUNT=4;BYDAY=TUTH"
-;;         "EXDATE;VALUE=DATE-TIME;TZID=Europe/Brussels:19970902T090000"
-;;         "EXDATE;VALUE=DATE-TIME;TZID=Europe/Brussels:19970909T090000"
-;;     ])
-;;     )
-
-;;     rr = rrulestr(rrstr)
-;;     assert list(rr) == [(moment 1997 9 4 9 tzinfo=BXL)
-;;                         (moment 1997 9 11 9 tzinfo=BXL)]
-
-;; (test-case "test-str-set-ex-date-value-date"
-;;     rrstr = '\n'.join([
-;;         "DTSTART;VALUE=DATE:19970902"
-;;         "RRULE:FREQ=YEARLY;COUNT=4;BYDAY=TUTH"
-;;         "EXDATE;VALUE=DATE:19970902"
-;;         "EXDATE;VALUE=DATE:19970909"
-;;     ])
-;;     )
-
-;;     rr = rrulestr(rrstr)
-;;     assert list(rr) == [(moment 1997 9 4) (moment 1997 9 11)]
-
-;; (test-case "test-str-set-date-and-ex-date"
-;;     (list(rrulestr(
-;;                           "DTSTART:19970902T090000\n"
-;;                           "RDATE:19970902T090000\n"
-;;                           "RDATE:19970904T090000\n"
-;;                           "RDATE:19970909T090000\n"
-;;                           "RDATE:19970911T090000\n"
-;;                           "RDATE:19970916T090000\n"
-;;                           "RDATE:19970918T090000\n"
-;;                           "EXDATE:19970904T090000\n"
-;;                           "EXDATE:19970911T090000\n"
-;;                           "EXDATE:19970918T090000\n"
-;;                           ))
-;;                      [(moment 1997 9 2 9 0)
-;;                       (moment 1997 9 9 9 0)
-;;                       (moment 1997 9 16 9 0)])
-;;     )
-
-;; (test-case "test-str-set-date-and-ex-rule"
-;;     (list(rrulestr(
-;;                           "DTSTART:19970902T090000\n"
-;;                           "RDATE:19970902T090000\n"
-;;                           "RDATE:19970904T090000\n"
-;;                           "RDATE:19970909T090000\n"
-;;                           "RDATE:19970911T090000\n"
-;;                           "RDATE:19970916T090000\n"
-;;                           "RDATE:19970918T090000\n"
-;;                           "EXRULE:FREQ=YEARLY;COUNT=3;BYDAY=TH\n"
-;;                           ))
-;;                      [(moment 1997 9 2 9 0)
-;;                       (moment 1997 9 9 9 0)
-;;                       (moment 1997 9 16 9 0)])
-;;     )
-
-;; (test-case "test-str-keywords"
-;;     (list(rrulestr(
-;;                           "DTSTART:19970902T090000\n"
-;;                           "RRULE:FREQ=YEARLY;COUNT=3;INTERVAL=3;"
-;;                                 "BYMONTH=3;byday=TH;BYMONTHDAY=3;"
-;;                                 "BYHOUR=3;BYMINUTE=3;BYSECOND=3\n"
-;;                           ))
-;;                      [(moment 2033 3 3 3 3 3)
-;;                       (moment 2039 3 3 3 3 3)
-;;                       (moment 2072 3 3 3 3 3)])
-;;     )
-
-;; (test-case "test-str-n-week-day"
-;;     (list(rrulestr(
-;;                           "DTSTART:19970902T090000\n"
-;;                           "RRULE:FREQ=YEARLY;COUNT=3;BYDAY=1TU-1TH\n"
-;;                           ))
-;;                      [(moment 1997 12 25 9 0)
-;;                       (moment 1998 1 6 9 0)
-;;                       (moment 1998 12 31 9 0)])
-;;     )
-
-;; (test-case "test-str-until"
-;;     (list(rrulestr(
-;;                           "DTSTART:19970902T090000\n"
-;;                           "RRULE:FREQ=YEARLY;"
-;;                           "UNTIL=19990101T000000;BYDAY=1TU-1TH\n"
-;;                           ))
-;;                      [(moment 1997 12 25 9 0)
-;;                       (moment 1998 1 6 9 0)
-;;                       (moment 1998 12 31 9 0)])
-;;     )
-
-;; (test-case "test-str-value-datetime"
-;;     rr = rrulestr("DTSTART;VALUE=DATE-TIME:19970902T090000\n"
-;;                    "RRULE:FREQ=YEARLY;COUNT=2")
-;;     )
-
-;;     (list(rr) [(moment 1997 9 2 9 0 0)
-;;                                 (moment 1998 9 2 9 0 0)])
-
-;; (test-case "test-str-value-date"
-;;     rr = rrulestr("DTSTART;VALUE=DATE:19970902\n"
-;;                    "RRULE:FREQ=YEARLY;COUNT=2")
-;;     )
-
-;;     (list(rr) [(moment 1997 9 2 0 0 0)
-;;                                 (moment 1998 9 2 0 0 0)])
-
-;; (test-case "test-str-multiple-dt-start-comma"
-;;     with pytest.raises(ValueError):
-;;         rr = rrulestr("DTSTART:19970101T00000019970202T000000\n"
-;;                       "RRULE:FREQ=YEARLY;COUNT=1")
-;;         )
-
-;; (test-case "test-str-invalid-until"
-;;     with self.assertRaises(ValueError):
-;;         list(rrulestr("DTSTART:19970902T090000\n"
-;;                       "RRULE:FREQ=YEARLY;"
-;;                       "UNTIL=TheCowsComeHome;BYDAY=1TU-1TH\n"))
-;;         )
-
-;; (test-case "test-str-until-must-be-utc"
-;;     with self.assertRaises(ValueError):
-;;         list(rrulestr("DTSTART;TZID=America/New_York:19970902T090000\n"
-;;                       "RRULE:FREQ=YEARLY;"
-;;                       "UNTIL=19990101T000000;BYDAY=1TU-1TH\n"))
-;;         )
-
-;; (test-case "test-str-until-with-tz"
-;;     NYC = tz.gettz('America/New_York')
-;;     rr = list(rrulestr("DTSTART;TZID=America/New_York:19970101T000000\n"
-;;                       "RRULE:FREQ=YEARLY;"
-;;                       "UNTIL=19990101T000000Z\n"))
-;;     (list(rr) [(moment 1997 1 1 0 0 0 tzinfo=NYC)
-;;                                 (moment 1998 1 1 0 0 0 tzinfo=NYC)])
-;;     )
-
-;; (test-case "test-str-empty-by-day"
-;;     with self.assertRaises(ValueError):
-;;         list(rrulestr("DTSTART:19970902T090000\n"
-;;                       "FREQ=WEEKLY;"
-;;                       "BYDAY=;"         # This part is invalid
-;;                       "WKST=SU"))
-;;         )
-
-;; (test-case "test-str-invalid-by-day"
-;;     with self.assertRaises(ValueError):
-;;         list(rrulestr("DTSTART:19970902T090000\n"
-;;                       "FREQ=WEEKLY;"
-;;                       "BYDAY=-1OK;"         # This part is invalid
-;;                       "WKST=SU"))
-;;         )
-
-;; (test-case "test-bad-by-set-pos"
-;;     self.assertRaises(ValueError
-;;                       rrule MONTHLY
-;;                              count=1
-;;                              bysetpos=0
-;;                              dtstart=(moment 1997 9 2 9 0))
-;;     )
-
-;; (test-case "test-bad-by-set-pos-many"
-;;     self.assertRaises(ValueError
-;;                       rrule MONTHLY
-;;                              count=1
-;;                              bysetpos=(-1 0 1))
-;;                              dtstart=(moment 1997 9 2 9 0)
-;;                              )
+(test-case "test-bad-by-set-pos-many"
+  (check-exn
+   exn:fail:contract?
+   (thunk (make-rrule #:freq 'monthly
+                      #:count 1
+                      #:bysetpos '(-1 0 1)))))
