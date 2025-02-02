@@ -4297,3 +4297,13 @@
                #:count 3
                #:wkst 'sunday)
    (moment 1997 9 2 9 0)))
+
+(test-case "test-replace-if-set"
+  (define rr (make-rrule #:freq 'yearly #:count 1 #:bymonthday '(5)))
+  (check-rrule-list rr (moment 1997 1 1) (list (moment 1997 1 5)))
+  (check-rrule-list (rrule-replace rr #:bymonthday '(6)) (moment 1997 1 1) (list (moment 1997 1 6))))
+
+(test-case "test-replace-if-not-set"
+  (define rr (make-rrule #:freq 'yearly))
+  (check-rrule-list rr (moment 1997 1 1) (list (moment 1997 1 1)))
+  (check-rrule-list (rrule-replace rr #:bymonthday '(6)) (moment 1997 1 1) (list (moment 1997 1 6))))

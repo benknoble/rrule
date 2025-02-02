@@ -31,7 +31,23 @@
                  [result (sequence/c moment?)])]
   [rrule->list (->i ([r (and/c valid-rrule? (not/c repeats-forever?))] [d dtstart/c])
                     #:pre (r d) (valid-rrule/dtstart? r d)
-                    [result (listof moment?)])]))
+                    [result (listof moment?)])]
+  [rrule-replace (->* (valid-rrule?)
+                      (#:freq freq/c
+                       #:until enddate/c
+                       #:count exact-positive-integer?
+                       #:interval exact-positive-integer?
+                       #:bysecond byseclist/c
+                       #:byminute byminlist/c
+                       #:byhour byhrlist/c
+                       #:byday bywdaylist/c
+                       #:bymonthday bymodaylist/c
+                       #:byyearday byyrdaylist/c
+                       #:byweeknumber bywknolist/c
+                       #:bymonth bymolist/c
+                       #:bysetpos bysplist/c
+                       #:wkst weekday/c)
+                      valid-rrule?)]))
 
 (require racket/match)
 
@@ -160,5 +176,36 @@
 
 (define (rrule->list rr dtstart)
   (sequence->list (in-rrule rr dtstart)))
+
+(define (rrule-replace rr
+                       #:freq [freq (rrule-freq rr)]
+                       #:until [until (rrule-until rr)]
+                       #:count [count (rrule-count rr)]
+                       #:interval [interval (rrule-interval rr)]
+                       #:bysecond [bysecond (rrule-bysecond rr)]
+                       #:byminute [byminute (rrule-byminute rr)]
+                       #:byhour [byhour (rrule-byhour rr)]
+                       #:byday [byday (rrule-byday rr)]
+                       #:bymonthday [bymonthday (rrule-bymonthday rr)]
+                       #:byyearday [byyearday (rrule-byyearday rr)]
+                       #:byweeknumber [byweeknumber (rrule-byweeknumber rr)]
+                       #:bymonth [bymonth (rrule-bymonth rr)]
+                       #:bysetpos [bysetpos (rrule-bysetpos rr)]
+                       #:wkst [wkst (rrule-wkst rr)])
+  (struct-copy rrule rr
+               [freq freq]
+               [until until]
+               [count count]
+               [interval interval]
+               [bysecond bysecond]
+               [byminute byminute]
+               [byhour byhour]
+               [byday byday]
+               [bymonthday bymonthday]
+               [byyearday byyearday]
+               [byweeknumber byweeknumber]
+               [bymonth bymonth]
+               [bysetpos bysetpos]
+               [wkst wkst]))
 
 ;; TODO: exdate
