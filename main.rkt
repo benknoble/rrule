@@ -95,7 +95,7 @@
    byday
    bymonthday
    byyearday
-   byweekno
+   byweeknumber
    bymonth
    bysetpos
    wkst])
@@ -107,14 +107,14 @@
        (not (and (member (rrule-freq r) '(monthly yearly))
                  (bywdaylist-contains-numeric-value? (rrule-byday r))))
        (not (and (eq? (rrule-freq r) 'yearly)
-                 (rrule-byweekno r)
+                 (rrule-byweeknumber r)
                  (bywdaylist-contains-numeric-value? (rrule-byday r))))
        (not (and (eq? (rrule-freq r) 'weekly)
                  (rrule-bymonthday r)))
        (not (and (member (rrule-freq r) '(daily weekly monthly))
                  (rrule-byyearday r)))
        (not (and (not (eq? (rrule-freq r) 'yearly))
-                 (rrule-byweekno r)))
+                 (rrule-byweeknumber r)))
        (not (and (rrule-bysetpos r)
                  (not (rrule-bysecond r))
                  (not (rrule-byminute r))
@@ -122,7 +122,7 @@
                  (not (rrule-byday r))
                  (not (rrule-bymonthday r))
                  (not (rrule-byyearday r))
-                 (not (rrule-byweekno r))
+                 (not (rrule-byweeknumber r))
                  (not (rrule-bymonth r))))))
 
 (define (valid-rrule/dtstart? r d)
