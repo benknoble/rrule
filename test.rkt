@@ -2565,3 +2565,1735 @@
    (thunk (make-rrule #:freq 'monthly
                       #:count 1
                       #:bysetpos '(-1 0 1)))))
+
+(test-case "test-to-str-yearly"
+  (check-roundtrip-through-string
+   (make-rrule #:freq 'yearly #:count 3)
+   (moment 1997 9 2 9 0)))
+
+(test-case "test-to-str-yearly-interval"
+  (check-roundtrip-through-string
+   (make-rrule #:freq 'yearly #:count 3 #:interval 2)
+   (moment 1997 9 2 9 0)))
+
+(test-case "test-to-str-yearly-by-month"
+  (check-roundtrip-through-string
+   (make-rrule #:freq 'yearly
+               #:count 3
+               #:bymonth '(1 3))
+   (moment 1997 9 2 9 0)))
+
+(test-case "test-to-str-yearly-by-month-day"
+  (check-roundtrip-through-string
+   (make-rrule #:freq 'yearly
+               #:count 3
+               #:bymonthday '(1 3))
+   (moment 1997 9 2 9 0)))
+
+(test-case "test-to-str-yearly-by-month-and-month-day"
+  (check-roundtrip-through-string
+   (make-rrule #:freq 'yearly
+               #:count 3
+               #:bymonth '(1 3)
+               #:bymonthday '(5 7))
+   (moment 1997 9 2 9 0)))
+
+(test-case "test-to-str-yearly-by-week-day"
+  (check-roundtrip-through-string
+   (make-rrule #:freq 'yearly
+               #:count 3
+               #:byday '((tuesday) (thursday)))
+   (moment 1997 9 2 9 0)))
+
+(test-case "test-to-str-yearly-by-n-week-day"
+  (check-roundtrip-through-string
+   (make-rrule #:freq 'yearly
+               #:count 3
+               #:byday '((1 tuesday) (-1 thursday)))
+   (moment 1997 9 2 9 0)))
+
+(test-case "test-to-str-yearly-by-n-week-day-large"
+  (check-roundtrip-through-string
+   (make-rrule #:freq 'yearly
+               #:count 3
+               #:byday '((3 tuesday) (-3 thursday)))
+   (moment 1997 9 2 9 0)))
+
+(test-case "test-to-str-yearly-by-month-and-week-day"
+  (check-roundtrip-through-string
+   (make-rrule #:freq 'yearly
+               #:count 3
+               #:bymonth '(1 3)
+               #:byday '((tuesday) (thursday)))
+   (moment 1997 9 2 9 0)))
+
+(test-case "test-to-str-yearly-by-month-and-n-week-day"
+  (check-roundtrip-through-string
+   (make-rrule #:freq 'yearly
+               #:count 3
+               #:bymonth '(1 3)
+               #:byday '((1 tuesday) (-1 thursday)))
+   (moment 1997 9 2 9 0)))
+
+(test-case "test-to-str-yearly-by-month-and-n-week-day-large"
+  ;; This is interesting because the TH(-3) ends up before the TU(3).
+  (check-roundtrip-through-string
+   (make-rrule #:freq 'yearly
+               #:count 3
+               #:bymonth '(1 3)
+               #:byday '((3 tuesday) (-3 thursday)))
+   (moment 1997 9 2 9 0)))
+
+(test-case "test-to-str-yearly-by-month-day-and-week-day"
+  (check-roundtrip-through-string
+   (make-rrule #:freq 'yearly
+               #:count 3
+               #:bymonthday '(1 3)
+               #:byday '((tuesday) (thursday)))
+   (moment 1997 9 2 9 0)))
+
+(test-case "test-to-str-yearly-by-month-and-month-day-and-week-day"
+  (check-roundtrip-through-string
+   (make-rrule #:freq 'yearly
+               #:count 3
+               #:bymonth '(1 3)
+               #:bymonthday '(1 3)
+               #:byday '((tuesday) (thursday)))
+   (moment 1997 9 2 9 0)))
+
+(test-case "test-to-str-yearly-by-year-day"
+  (check-roundtrip-through-string
+   (make-rrule #:freq 'yearly
+               #:count 4
+               #:byyearday '(1 100 200 365))
+   (moment 1997 9 2 9 0)))
+
+(test-case "test-to-str-yearly-by-year-day-neg"
+  (check-roundtrip-through-string
+   (make-rrule #:freq 'yearly
+               #:count 4
+               #:byyearday '(-365 -266 -166 -1))
+   (moment 1997 9 2 9 0)))
+
+(test-case "test-to-str-yearly-by-month-and-year-day"
+  (check-roundtrip-through-string
+   (make-rrule #:freq 'yearly
+               #:count 4
+               #:bymonth '(4 7)
+               #:byyearday '(1 100 200 365))
+   (moment 1997 9 2 9 0)))
+
+(test-case "test-to-str-yearly-by-month-and-year-day-neg"
+  (check-roundtrip-through-string
+   (make-rrule #:freq 'yearly
+               #:count 4
+               #:bymonth '(4 7)
+               #:byyearday '(-365 -266 -166 -1))
+   (moment 1997 9 2 9 0)))
+
+(test-case "test-to-str-yearly-by-week-no"
+  (check-roundtrip-through-string
+   (make-rrule #:freq 'yearly
+               #:count 3
+               #:byweeknumber '(20))
+   (moment 1997 9 2 9 0)))
+
+(test-case "test-to-str-yearly-by-week-no-and-week-day"
+  ;; That's a nice one. The first days of week number one may be in the last
+  ;; year.
+  (check-roundtrip-through-string
+   (make-rrule #:freq 'yearly
+               #:count 3
+               #:byweeknumber '(1)
+               #:byday '(monday))
+   (moment 1997 9 2 9 0)))
+
+(test-case "test-to-str-yearly-by-week-no-and-week-day-large"
+  ;; Another nice test. The last days of week number 52/53 may be in the next
+  ;; year.
+  (check-roundtrip-through-string
+   (make-rrule #:freq 'yearly
+               #:count 3
+               #:byweeknumber '(52)
+               #:byday '(sunday))
+   (moment 1997 9 2 9 0)))
+
+(test-case "test-to-str-yearly-by-week-no-and-week-day-last"
+  (check-roundtrip-through-string
+   (make-rrule #:freq 'yearly
+               #:count 3
+               #:byweeknumber '(-1)
+               #:byday '(sunday))
+   (moment 1997 9 2 9 0)))
+
+(test-case "test-to-str-yearly-by-easter"
+  (check-roundtrip-through-string
+   (make-rrule #:freq 'yearly
+               #:count 3
+               #:byeaster 0)
+   (moment 1997 9 2 9 0)))
+
+(test-case "test-to-str-yearly-by-easter-pos"
+  (check-roundtrip-through-string
+   (make-rrule #:freq 'yearly
+               #:count 3
+               #:byeaster 1)
+   (moment 1997 9 2 9 0)))
+
+(test-case "test-to-str-yearly-by-easter-neg"
+  (check-roundtrip-through-string
+   (make-rrule #:freq 'yearly
+               #:count 3
+               #:byeaster -1)
+   (moment 1997 9 2 9 0)))
+
+(test-case "test-to-str-yearly-by-week-no-and-week-day53"
+  (check-roundtrip-through-string
+   (make-rrule #:freq 'yearly
+               #:count 3
+               #:byweeknumber '(53)
+               #:byday '(monday))
+   (moment 1997 9 2 9 0)))
+
+(test-case "test-to-str-yearly-by-hour"
+  (check-roundtrip-through-string
+   (make-rrule #:freq 'yearly
+               #:count 3
+               #:byhour '(6 18))
+   (moment 1997 9 2 9 0)))
+
+(test-case "test-to-str-yearly-by-minute"
+  (check-roundtrip-through-string
+   (make-rrule #:freq 'yearly
+               #:count 3
+               #:byminute '(6 18))
+   (moment 1997 9 2 9 0)))
+
+(test-case "test-to-str-yearly-by-second"
+  (check-roundtrip-through-string
+   (make-rrule #:freq 'yearly
+               #:count 3
+               #:bysecond '(6 18))
+   (moment 1997 9 2 9 0)))
+
+(test-case "test-to-str-yearly-by-hour-and-minute"
+  (check-roundtrip-through-string
+   (make-rrule #:freq 'yearly
+               #:count 3
+               #:byhour '(6 18)
+               #:byminute '(6 18))
+   (moment 1997 9 2 9 0)))
+
+(test-case "test-to-str-yearly-by-hour-and-second"
+  (check-roundtrip-through-string
+   (make-rrule #:freq 'yearly
+               #:count 3
+               #:byhour '(6 18)
+               #:bysecond '(6 18))
+   (moment 1997 9 2 9 0)))
+
+(test-case "test-to-str-yearly-by-minute-and-second"
+  (check-roundtrip-through-string
+   (make-rrule #:freq 'yearly
+               #:count 3
+               #:byminute '(6 18)
+               #:bysecond '(6 18))
+   (moment 1997 9 2 9 0)))
+
+(test-case "test-to-str-yearly-by-hour-and-minute-and-second"
+  (check-roundtrip-through-string
+   (make-rrule #:freq 'yearly
+               #:count 3
+               #:byhour '(6 18)
+               #:byminute '(6 18)
+               #:bysecond '(6 18))
+   (moment 1997 9 2 9 0)))
+
+(test-case "test-to-str-yearly-by-set-pos"
+  (check-roundtrip-through-string
+   (make-rrule #:freq 'yearly
+               #:count 3
+               #:bymonthday 15
+               #:byhour '(6 18)
+               #:bysetpos (3 -3))
+   (moment 1997 9 2 9 0)))
+
+(test-case "test-to-str-monthly"
+  (check-roundtrip-through-string
+   (make-rrule #:freq 'monthly
+               #:count 3)
+   (moment 1997 9 2 9 0)))
+
+(test-case "test-to-str-monthly-interval"
+  (check-roundtrip-through-string
+   (make-rrule #:freq 'monthly
+               #:count 3
+               #:interval 2)
+   (moment 1997 9 2 9 0)))
+
+(test-case "test-to-str-monthly-interval-large"
+  (check-roundtrip-through-string
+   (make-rrule #:freq 'monthly
+               #:count 3
+               #:interval 18)
+   (moment 1997 9 2 9 0)))
+
+(test-case "test-to-str-monthly-by-month"
+  (check-roundtrip-through-string
+   (make-rrule #:freq 'monthly
+               #:count 3
+               #:bymonth '(1 3))
+   (moment 1997 9 2 9 0)))
+
+(test-case "test-to-str-monthly-by-month-day"
+  (check-roundtrip-through-string
+   (make-rrule #:freq 'monthly
+               #:count 3
+               #:bymonthday '(1 3))
+   (moment 1997 9 2 9 0)))
+
+(test-case "test-to-str-monthly-by-month-and-month-day"
+  (check-roundtrip-through-string
+   (make-rrule #:freq 'monthly
+               #:count 3
+               #:bymonth '(1 3)
+               #:bymonthday '(5 7))
+   (moment 1997 9 2 9 0)))
+
+(test-case "test-to-str-monthly-by-week-day"
+  (check-roundtrip-through-string
+   (make-rrule #:freq 'monthly
+               #:count 3
+               #:byday '((tuesday) (thursday)))
+   (moment 1997 9 2 9 0))
+
+  ;; Third Monday of the month
+  ;; Ben: I'm not sure why this is here, but I'll keep it for consistency with
+  ;; the Python tests.
+  (check-equal?
+   (for/list ([m (in-rrule (make-rrule #:freq 'monthly
+                                       #:byday '((3 monday))
+                                       (moment 1997 9 1)))]
+              #:when (and (moment<? (moment 1997 9 1) m)
+                          (moment<? m (moment 1997 12 1))))
+     m)
+   (list (moment 1997 9 15 0 0)
+         (moment 1997 10 20 0 0)
+         (moment 1997 11 17 0 0))))
+
+(test-case "test-to-str-monthly-by-n-week-day"
+  (check-roundtrip-through-string
+   (make-rrule #:freq 'monthly
+               #:count 3
+               #:byday '((1 tuesday) (-1 thursday)))
+   (moment 1997 9 2 9 0)))
+
+(test-case "test-to-str-monthly-by-n-week-day-large"
+  (check-roundtrip-through-string
+   (make-rrule #:freq 'monthly
+               #:count 3
+               #:byday '((3 tuesday) (-3 thursday)))
+   (moment 1997 9 2 9 0)))
+
+(test-case "test-to-str-monthly-by-month-and-week-day"
+  (check-roundtrip-through-string
+   (make-rrule #:freq 'monthly
+               #:count 3
+               #:bymonth '(1 3)
+               #:byday '((tuesday) (thursday)))
+   (moment 1997 9 2 9 0)))
+
+(test-case "test-to-str-monthly-by-month-and-n-week-day"
+  (check-roundtrip-through-string
+   (make-rrule #:freq 'monthly
+               #:count 3
+               #:bymonth '(1 3)
+               #:byday '((1 tuesday) (-1 thursday)))
+   (moment 1997 9 2 9 0)))
+
+(test-case "test-to-str-monthly-by-month-and-n-week-day-large"
+  (check-roundtrip-through-string
+   (make-rrule #:freq 'monthly
+               #:count 3
+               #:bymonth '(1 3)
+               #:byday '((3 tuesday) (-3 thursday)))
+   (moment 1997 9 2 9 0)))
+
+(test-case "test-to-str-monthly-by-month-day-and-week-day"
+  (check-roundtrip-through-string
+   (make-rrule #:freq 'monthly
+               #:count 3
+               #:bymonthday '(1 3)
+               #:byday '((tuesday) (thursday)))
+   (moment 1997 9 2 9 0)))
+
+(test-case "test-to-str-monthly-by-month-and-month-day-and-week-day"
+  (check-roundtrip-through-string
+   (make-rrule #:freq 'monthly
+               #:count 3
+               #:bymonth '(1 3)
+               #:bymonthday '(1 3)
+               #:byday '((tuesday) (thursday)))
+   (moment 1997 9 2 9 0)))
+
+(test-case "test-to-str-monthly-by-year-day"
+  (check-roundtrip-through-string
+   (make-rrule #:freq 'monthly
+               #:count 4
+               #:byyearday '(1 100 200 365))
+   (moment 1997 9 2 9 0)))
+
+(test-case "test-to-str-monthly-by-year-day-neg"
+  (check-roundtrip-through-string
+   (make-rrule #:freq 'monthly
+               #:count 4
+               #:byyearday '(-365 -266 -166 -1))
+   (moment 1997 9 2 9 0)))
+
+(test-case "test-to-str-monthly-by-month-and-year-day"
+  (check-roundtrip-through-string
+   (make-rrule #:freq 'monthly
+               #:count 4
+               #:bymonth '(4 7)
+               #:byyearday '(1 100 200 365))
+   (moment 1997 9 2 9 0)))
+
+(test-case "test-to-str-monthly-by-month-and-year-day-neg"
+  (check-roundtrip-through-string
+   (make-rrule #:freq 'monthly
+               #:count 4
+               #:bymonth '(4 7)
+               #:byyearday '(-365 -266 -166 -1))
+   (moment 1997 9 2 9 0)))
+
+(test-case "test-to-str-monthly-by-week-no"
+  (check-roundtrip-through-string
+   (make-rrule #:freq 'monthly
+               #:count 3
+               #:byweeknumber '(20))
+   (moment 1997 9 2 9 0)))
+
+(test-case "test-to-str-monthly-by-week-no-and-week-day"
+  ;; That's a nice one. The first days of week number one may be in the last
+  ;; year.
+  (check-roundtrip-through-string
+   (make-rrule #:freq 'monthly
+               #:count 3
+               #:byweeknumber '(1)
+               #:byday '(monday))
+   (moment 1997 9 2 9 0)))
+
+(test-case "test-to-str-monthly-by-week-no-and-week-day-large"
+  ;; Another nice test. The last days of week number 52/53 may be in the next
+  ;; year.
+  (check-roundtrip-through-string
+   (make-rrule #:freq 'monthly
+               #:count 3
+               #:byweeknumber '(52)
+               #:byday '(sunday))
+   (moment 1997 9 2 9 0)))
+
+(test-case "test-to-str-monthly-by-week-no-and-week-day-last"
+  (check-roundtrip-through-string
+   (make-rrule #:freq 'monthly
+               #:count 3
+               #:byweeknumber '(-1)
+               #:byday '(sunday))
+   (moment 1997 9 2 9 0)))
+
+(test-case "test-to-str-monthly-by-week-no-and-week-day53"
+  (check-roundtrip-through-string
+   (make-rrule #:freq 'monthly
+               #:count 3
+               #:byweeknumber '(53)
+               #:byday '(monday))
+   (moment 1997 9 2 9 0)))
+
+(test-case "test-to-str-monthly-by-easter"
+  (check-roundtrip-through-string
+   (make-rrule #:freq 'monthly
+               #:count 3
+               #:byeaster 0)
+   (moment 1997 9 2 9 0)))
+
+(test-case "test-to-str-monthly-by-easter-pos"
+  (check-roundtrip-through-string
+   (make-rrule #:freq 'monthly
+               #:count 3
+               #:byeaster 1)
+   (moment 1997 9 2 9 0)))
+
+(test-case "test-to-str-monthly-by-easter-neg"
+  (check-roundtrip-through-string
+   (make-rrule #:freq 'monthly
+               #:count 3
+               #:byeaster -1)
+   (moment 1997 9 2 9 0)))
+
+(test-case "test-to-str-monthly-by-hour"
+  (check-roundtrip-through-string
+   (make-rrule #:freq 'monthly
+               #:count 3
+               #:byhour '(6 18))
+   (moment 1997 9 2 9 0)))
+
+(test-case "test-to-str-monthly-by-minute"
+  (check-roundtrip-through-string
+   (make-rrule #:freq 'monthly
+               #:count 3
+               #:byminute '(6 18))
+   (moment 1997 9 2 9 0)))
+
+(test-case "test-to-str-monthly-by-second"
+  (check-roundtrip-through-string
+   (make-rrule #:freq 'monthly
+               #:count 3
+               #:bysecond '(6 18))
+   (moment 1997 9 2 9 0)))
+
+(test-case "test-to-str-monthly-by-hour-and-minute"
+  (check-roundtrip-through-string
+   (make-rrule #:freq 'monthly
+               #:count 3
+               #:byhour '(6 18)
+               #:byminute '(6 18))
+   (moment 1997 9 2 9 0)))
+
+(test-case "test-to-str-monthly-by-hour-and-second"
+  (check-roundtrip-through-string
+   (make-rrule #:freq 'monthly
+               #:count 3
+               #:byhour '(6 18)
+               #:bysecond '(6 18))
+   (moment 1997 9 2 9 0)))
+
+(test-case "test-to-str-monthly-by-minute-and-second"
+  (check-roundtrip-through-string
+   (make-rrule #:freq 'monthly
+               #:count 3
+               #:byminute '(6 18)
+               #:bysecond '(6 18))
+   (moment 1997 9 2 9 0)))
+
+(test-case "test-to-str-monthly-by-hour-and-minute-and-second"
+  (check-roundtrip-through-string
+   (make-rrule #:freq 'monthly
+               #:count 3
+               #:byhour '(6 18)
+               #:byminute '(6 18)
+               #:bysecond '(6 18))
+   (moment 1997 9 2 9 0)))
+
+(test-case "test-to-str-monthly-by-set-pos"
+  (check-roundtrip-through-string
+   (make-rrule #:freq 'monthly
+               #:count 3
+               #:bymonthday '(13 17)
+               #:byhour '(6 18)
+               #:bysetpos (3 -3))
+   (moment 1997 9 2 9 0)))
+
+(test-case "test-to-str-weekly"
+  (check-roundtrip-through-string
+   (make-rrule #:freq 'weekly
+               #:count 3)
+   (moment 1997 9 2 9 0)))
+
+(test-case "test-to-str-weekly-interval"
+  (check-roundtrip-through-string
+   (make-rrule #:freq 'weekly
+               #:count 3
+               #:interval 2)
+   (moment 1997 9 2 9 0)))
+
+(test-case "test-to-str-weekly-interval-large"
+  (check-roundtrip-through-string
+   (make-rrule #:freq 'weekly
+               #:count 3
+               #:interval 20)
+   (moment 1997 9 2 9 0)))
+
+(test-case "test-to-str-weekly-by-month"
+  (check-roundtrip-through-string
+   (make-rrule #:freq 'weekly
+               #:count 3
+               #:bymonth '(1 3))
+   (moment 1997 9 2 9 0)))
+
+(test-case "test-to-str-weekly-by-month-day"
+  (check-roundtrip-through-string
+   (make-rrule #:freq 'weekly
+               #:count 3
+               #:bymonthday '(1 3))
+   (moment 1997 9 2 9 0)))
+
+(test-case "test-to-str-weekly-by-month-and-month-day"
+  (check-roundtrip-through-string
+   (make-rrule #:freq 'weekly
+               #:count 3
+               #:bymonth '(1 3)
+               #:bymonthday '(5 7))
+   (moment 1997 9 2 9 0)))
+
+(test-case "test-to-str-weekly-by-week-day"
+  (check-roundtrip-through-string
+   (make-rrule #:freq 'weekly
+               #:count 3
+               #:byday '((tuesday) (thursday)))
+   (moment 1997 9 2 9 0)))
+
+(test-case "test-to-str-weekly-by-n-week-day"
+  (check-roundtrip-through-string
+   (make-rrule #:freq 'weekly
+               #:count 3
+               #:byday '((1 tuesday) (-1 thursday)))
+   (moment 1997 9 2 9 0)))
+
+(test-case "test-to-str-weekly-by-month-and-week-day"
+  ;; This test is interesting because it crosses the year boundary in a weekly
+  ;; period to find day '1' as a valid recurrence.
+  (check-roundtrip-through-string
+   (make-rrule #:freq 'weekly
+               #:count 3
+               #:bymonth '(1 3)
+               #:byday '((tuesday) (thursday)))
+   (moment 1997 9 2 9 0)))
+
+(test-case "test-to-str-weekly-by-month-and-n-week-day"
+  (check-roundtrip-through-string
+   (make-rrule #:freq 'weekly
+               #:count 3
+               #:bymonth '(1 3)
+               #:byday '((1 tuesday) (-1 thursday)))
+   (moment 1997 9 2 9 0)))
+
+(test-case "test-to-str-weekly-by-month-day-and-week-day"
+  (check-roundtrip-through-string
+   (make-rrule #:freq 'weekly
+               #:count 3
+               #:bymonthday '(1 3)
+               #:byday '((tuesday) (thursday)))
+   (moment 1997 9 2 9 0)))
+
+(test-case "test-to-str-weekly-by-month-and-month-day-and-week-day"
+  (check-roundtrip-through-string
+   (make-rrule #:freq 'weekly
+               #:count 3
+               #:bymonth '(1 3)
+               #:bymonthday '(1 3)
+               #:byday '((tuesday) (thursday)))
+   (moment 1997 9 2 9 0)))
+
+(test-case "test-to-str-weekly-by-year-day"
+  (check-roundtrip-through-string
+   (make-rrule #:freq 'weekly
+               #:count 4
+               #:byyearday '(1 100 200 365))
+   (moment 1997 9 2 9 0)))
+
+(test-case "test-to-str-weekly-by-year-day-neg"
+  (check-roundtrip-through-string
+   (make-rrule #:freq 'weekly
+               #:count 4
+               #:byyearday '(-365 -266 -166 -1))
+   (moment 1997 9 2 9 0)))
+
+(test-case "test-to-str-weekly-by-month-and-year-day"
+  (check-roundtrip-through-string
+   (make-rrule #:freq 'weekly
+               #:count 4
+               #:bymonth '(1 7)
+               #:byyearday '(1 100 200 365))
+   (moment 1997 9 2 9 0)))
+
+(test-case "test-to-str-weekly-by-month-and-year-day-neg"
+  (check-roundtrip-through-string
+   (make-rrule #:freq 'weekly
+               #:count 4
+               #:bymonth '(1 7)
+               #:byyearday '(-365 -266 -166 -1))
+   (moment 1997 9 2 9 0)))
+
+(test-case "test-to-str-weekly-by-week-no"
+  (check-roundtrip-through-string
+   (make-rrule #:freq 'weekly
+               #:count 3
+               #:byweeknumber '(20))
+   (moment 1997 9 2 9 0)))
+
+(test-case "test-to-str-weekly-by-week-no-and-week-day"
+  ;; That's a nice one. The first days of week number one may be in the last
+  ;; year.
+  (check-roundtrip-through-string
+   (make-rrule #:freq 'weekly
+               #:count 3
+               #:byweeknumber '(1)
+               #:byday '(monday))
+   (moment 1997 9 2 9 0)))
+
+(test-case "test-to-str-weekly-by-week-no-and-week-day-large"
+  ;; Another nice test. The last days of week number 52/53 may be in the next
+  ;; year.
+  (check-roundtrip-through-string
+   (make-rrule #:freq 'weekly
+               #:count 3
+               #:byweeknumber '(52)
+               #:byday '(sunday))
+   (moment 1997 9 2 9 0)))
+
+(test-case "test-to-str-weekly-by-week-no-and-week-day-last"
+  (check-roundtrip-through-string
+   (make-rrule #:freq 'weekly
+               #:count 3
+               #:byweeknumber '(-1)
+               #:byday '(sunday))
+   (moment 1997 9 2 9 0)))
+
+(test-case "test-to-str-weekly-by-week-no-and-week-day53"
+  (check-roundtrip-through-string
+   (make-rrule #:freq 'weekly
+               #:count 3
+               #:byweeknumber '(53)
+               #:byday '(monday))
+   (moment 1997 9 2 9 0)))
+
+(test-case "test-to-str-weekly-by-easter"
+  (check-roundtrip-through-string
+   (make-rrule #:freq 'weekly
+               #:count 3
+               #:byeaster 0)
+   (moment 1997 9 2 9 0)))
+
+(test-case "test-to-str-weekly-by-easter-pos"
+  (check-roundtrip-through-string
+   (make-rrule #:freq 'weekly
+               #:count 3
+               #:byeaster 1)
+   (moment 1997 9 2 9 0)))
+
+(test-case "test-to-str-weekly-by-easter-neg"
+  (check-roundtrip-through-string
+   (make-rrule #:freq 'weekly
+               #:count 3
+               #:byeaster -1)
+   (moment 1997 9 2 9 0)))
+
+(test-case "test-to-str-weekly-by-hour"
+  (check-roundtrip-through-string
+   (make-rrule #:freq 'weekly
+               #:count 3
+               #:byhour '(6 18))
+   (moment 1997 9 2 9 0)))
+
+(test-case "test-to-str-weekly-by-minute"
+  (check-roundtrip-through-string
+   (make-rrule #:freq 'weekly
+               #:count 3
+               #:byminute '(6 18))
+   (moment 1997 9 2 9 0)))
+
+(test-case "test-to-str-weekly-by-second"
+  (check-roundtrip-through-string
+   (make-rrule #:freq 'weekly
+               #:count 3
+               #:bysecond '(6 18))
+   (moment 1997 9 2 9 0)))
+
+(test-case "test-to-str-weekly-by-hour-and-minute"
+  (check-roundtrip-through-string
+   (make-rrule #:freq 'weekly
+               #:count 3
+               #:byhour '(6 18)
+               #:byminute '(6 18))
+   (moment 1997 9 2 9 0)))
+
+(test-case "test-to-str-weekly-by-hour-and-second"
+  (check-roundtrip-through-string
+   (make-rrule #:freq 'weekly
+               #:count 3
+               #:byhour '(6 18)
+               #:bysecond '(6 18))
+   (moment 1997 9 2 9 0)))
+
+(test-case "test-to-str-weekly-by-minute-and-second"
+  (check-roundtrip-through-string
+   (make-rrule #:freq 'weekly
+               #:count 3
+               #:byminute '(6 18)
+               #:bysecond '(6 18))
+   (moment 1997 9 2 9 0)))
+
+(test-case "test-to-str-weekly-by-hour-and-minute-and-second"
+  (check-roundtrip-through-string
+   (make-rrule #:freq 'weekly
+               #:count 3
+               #:byhour '(6 18)
+               #:byminute '(6 18)
+               #:bysecond '(6 18))
+   (moment 1997 9 2 9 0)))
+
+(test-case "test-to-str-weekly-by-set-pos"
+  (check-roundtrip-through-string
+   (make-rrule #:freq 'weekly
+               #:count 3
+               #:byday '((tuesday) (thursday))
+               #:byhour '(6 18)
+               #:bysetpos (3 -3))
+   (moment 1997 9 2 9 0)))
+
+(test-case "test-to-str-daily"
+  (check-roundtrip-through-string
+   (make-rrule #:freq 'daily
+               #:count 3)
+   (moment 1997 9 2 9 0)))
+
+(test-case "test-to-str-daily-interval"
+  (check-roundtrip-through-string
+   (make-rrule #:freq 'daily
+               #:count 3
+               #:interval 2)
+   (moment 1997 9 2 9 0)))
+
+(test-case "test-to-str-daily-interval-large"
+  (check-roundtrip-through-string
+   (make-rrule #:freq 'daily
+               #:count 3
+               #:interval 92)
+   (moment 1997 9 2 9 0)))
+
+(test-case "test-to-str-daily-by-month"
+  (check-roundtrip-through-string
+   (make-rrule #:freq 'daily
+               #:count 3
+               #:bymonth '(1 3))
+   (moment 1997 9 2 9 0)))
+
+(test-case "test-to-str-daily-by-month-day"
+  (check-roundtrip-through-string
+   (make-rrule #:freq 'daily
+               #:count 3
+               #:bymonthday '(1 3))
+   (moment 1997 9 2 9 0)))
+
+(test-case "test-to-str-daily-by-month-and-month-day"
+  (check-roundtrip-through-string
+   (make-rrule #:freq 'daily
+               #:count 3
+               #:bymonth '(1 3)
+               #:bymonthday '(5 7))
+   (moment 1997 9 2 9 0)))
+
+(test-case "test-to-str-daily-by-week-day"
+  (check-roundtrip-through-string
+   (make-rrule #:freq 'daily
+               #:count 3
+               #:byday '((tuesday) (thursday)))
+   (moment 1997 9 2 9 0)))
+
+(test-case "test-to-str-daily-by-n-week-day"
+  (check-roundtrip-through-string
+   (make-rrule #:freq 'daily
+               #:count 3
+               #:byday '((1 tuesday) (-1 thursday)))
+   (moment 1997 9 2 9 0)))
+
+(test-case "test-to-str-daily-by-month-and-week-day"
+  (check-roundtrip-through-string
+   (make-rrule #:freq 'daily
+               #:count 3
+               #:bymonth '(1 3)
+               #:byday '((tuesday) (thursday)))
+   (moment 1997 9 2 9 0)))
+
+(test-case "test-to-str-daily-by-month-and-n-week-day"
+  (check-roundtrip-through-string
+   (make-rrule #:freq 'daily
+               #:count 3
+               #:bymonth '(1 3)
+               #:byday '((1 tuesday) (-1 thursday)))
+   (moment 1997 9 2 9 0)))
+
+(test-case "test-to-str-daily-by-month-day-and-week-day"
+  (check-roundtrip-through-string
+   (make-rrule #:freq 'daily
+               #:count 3
+               #:bymonthday '(1 3)
+               #:byday '((tuesday) (thursday)))
+   (moment 1997 9 2 9 0)))
+
+(test-case "test-to-str-daily-by-month-and-month-day-and-week-day"
+  (check-roundtrip-through-string
+   (make-rrule #:freq 'daily
+               #:count 3
+               #:bymonth '(1 3)
+               #:bymonthday '(1 3)
+               #:byday '((tuesday) (thursday)))
+   (moment 1997 9 2 9 0)))
+
+(test-case "test-to-str-daily-by-year-day"
+  (check-roundtrip-through-string
+   (make-rrule #:freq 'daily
+               #:count 4
+               #:byyearday '(1 100 200 365))
+   (moment 1997 9 2 9 0)))
+
+(test-case "test-to-str-daily-by-year-day-neg"
+  (check-roundtrip-through-string
+   (make-rrule #:freq 'daily
+               #:count 4
+               #:byyearday '(-365 -266 -166 -1))
+   (moment 1997 9 2 9 0)))
+
+(test-case "test-to-str-daily-by-month-and-year-day"
+  (check-roundtrip-through-string
+   (make-rrule #:freq 'daily
+               #:count 4
+               #:bymonth '(1 7)
+               #:byyearday '(1 100 200 365))
+   (moment 1997 9 2 9 0)))
+
+(test-case "test-to-str-daily-by-month-and-year-day-neg"
+  (check-roundtrip-through-string
+   (make-rrule #:freq 'daily
+               #:count 4
+               #:bymonth '(1 7)
+               #:byyearday '(-365 -266 -166 -1))
+   (moment 1997 9 2 9 0)))
+
+(test-case "test-to-str-daily-by-week-no"
+  (check-roundtrip-through-string
+   (make-rrule #:freq 'daily
+               #:count 3
+               #:byweeknumber '(20))
+   (moment 1997 9 2 9 0)))
+
+(test-case "test-to-str-daily-by-week-no-and-week-day"
+  ;; That's a nice one. The first days of week number one may be in the last
+  ;; year.
+  (check-roundtrip-through-string
+   (make-rrule #:freq 'daily
+               #:count 3
+               #:byweeknumber '(1)
+               #:byday '(monday))
+   (moment 1997 9 2 9 0)))
+
+(test-case "test-to-str-daily-by-week-no-and-week-day-large"
+  ;; Another nice test. The last days of week number 52/53 may be in the next
+  ;; year.
+  (check-roundtrip-through-string
+   (make-rrule #:freq 'daily
+               #:count 3
+               #:byweeknumber '(52)
+               #:byday '(sunday))
+   (moment 1997 9 2 9 0)))
+
+(test-case "test-to-str-daily-by-week-no-and-week-day-last"
+  (check-roundtrip-through-string
+   (make-rrule #:freq 'daily
+               #:count 3
+               #:byweeknumber '(-1)
+               #:byday '(sunday))
+   (moment 1997 9 2 9 0)))
+
+(test-case "test-to-str-daily-by-week-no-and-week-day53"
+  (check-roundtrip-through-string
+   (make-rrule #:freq 'daily
+               #:count 3
+               #:byweeknumber '(53)
+               #:byday '(monday))
+   (moment 1997 9 2 9 0)))
+
+(test-case "test-to-str-daily-by-easter"
+  (check-roundtrip-through-string
+   (make-rrule #:freq 'daily
+               #:count 3
+               #:byeaster 0)
+   (moment 1997 9 2 9 0)))
+
+(test-case "test-to-str-daily-by-easter-pos"
+  (check-roundtrip-through-string
+   (make-rrule #:freq 'daily
+               #:count 3
+               #:byeaster 1)
+   (moment 1997 9 2 9 0)))
+
+(test-case "test-to-str-daily-by-easter-neg"
+  (check-roundtrip-through-string
+   (make-rrule #:freq 'daily
+               #:count 3
+               #:byeaster -1)
+   (moment 1997 9 2 9 0)))
+
+(test-case "test-to-str-daily-by-hour"
+  (check-roundtrip-through-string
+   (make-rrule #:freq 'daily
+               #:count 3
+               #:byhour '(6 18))
+   (moment 1997 9 2 9 0)))
+
+(test-case "test-to-str-daily-by-minute"
+  (check-roundtrip-through-string
+   (make-rrule #:freq 'daily
+               #:count 3
+               #:byminute '(6 18))
+   (moment 1997 9 2 9 0)))
+
+(test-case "test-to-str-daily-by-second"
+  (check-roundtrip-through-string
+   (make-rrule #:freq 'daily
+               #:count 3
+               #:bysecond '(6 18))
+   (moment 1997 9 2 9 0)))
+
+(test-case "test-to-str-daily-by-hour-and-minute"
+  (check-roundtrip-through-string
+   (make-rrule #:freq 'daily
+               #:count 3
+               #:byhour '(6 18)
+               #:byminute '(6 18))
+   (moment 1997 9 2 9 0)))
+
+(test-case "test-to-str-daily-by-hour-and-second"
+  (check-roundtrip-through-string
+   (make-rrule #:freq 'daily
+               #:count 3
+               #:byhour '(6 18)
+               #:bysecond '(6 18))
+   (moment 1997 9 2 9 0)))
+
+(test-case "test-to-str-daily-by-minute-and-second"
+  (check-roundtrip-through-string
+   (make-rrule #:freq 'daily
+               #:count 3
+               #:byminute '(6 18)
+               #:bysecond '(6 18))
+   (moment 1997 9 2 9 0)))
+
+(test-case "test-to-str-daily-by-hour-and-minute-and-second"
+  (check-roundtrip-through-string
+   (make-rrule #:freq 'daily
+               #:count 3
+               #:byhour '(6 18)
+               #:byminute '(6 18)
+               #:bysecond '(6 18))
+   (moment 1997 9 2 9 0)))
+
+(test-case "test-to-str-daily-by-set-pos"
+  (check-roundtrip-through-string
+   (make-rrule #:freq 'daily
+               #:count 3
+               #:byhour '(6 18)
+               #:byminute '(15 45)
+               #:bysetpos (3 -3))
+   (moment 1997 9 2 9 0)))
+
+(test-case "test-to-str-hourly"
+  (check-roundtrip-through-string
+   (make-rrule #:freq 'hourly
+               #:count 3)
+   (moment 1997 9 2 9 0)))
+
+(test-case "test-to-str-hourly-interval"
+  (check-roundtrip-through-string
+   (make-rrule #:freq 'hourly
+               #:count 3
+               #:interval 2)
+   (moment 1997 9 2 9 0)))
+
+(test-case "test-to-str-hourly-interval-large"
+  (check-roundtrip-through-string
+   (make-rrule #:freq 'hourly
+               #:count 3
+               #:interval 769)
+   (moment 1997 9 2 9 0)))
+
+(test-case "test-to-str-hourly-by-month"
+  (check-roundtrip-through-string
+   (make-rrule #:freq 'hourly
+               #:count 3
+               #:bymonth '(1 3))
+   (moment 1997 9 2 9 0)))
+
+(test-case "test-to-str-hourly-by-month-day"
+  (check-roundtrip-through-string
+   (make-rrule #:freq 'hourly
+               #:count 3
+               #:bymonthday '(1 3))
+   (moment 1997 9 2 9 0)))
+
+(test-case "test-to-str-hourly-by-month-and-month-day"
+  (check-roundtrip-through-string
+   (make-rrule #:freq 'hourly
+               #:count 3
+               #:bymonth '(1 3)
+               #:bymonthday '(5 7))
+   (moment 1997 9 2 9 0)))
+
+(test-case "test-to-str-hourly-by-week-day"
+  (check-roundtrip-through-string
+   (make-rrule #:freq 'hourly
+               #:count 3
+               #:byday '((tuesday) (thursday)))
+   (moment 1997 9 2 9 0)))
+
+(test-case "test-to-str-hourly-by-n-week-day"
+  (check-roundtrip-through-string
+   (make-rrule #:freq 'hourly
+               #:count 3
+               #:byday '((1 tuesday) (-1 thursday)))
+   (moment 1997 9 2 9 0)))
+
+(test-case "test-to-str-hourly-by-month-and-week-day"
+  (check-roundtrip-through-string
+   (make-rrule #:freq 'hourly
+               #:count 3
+               #:bymonth '(1 3)
+               #:byday '((tuesday) (thursday)))
+   (moment 1997 9 2 9 0)))
+
+(test-case "test-to-str-hourly-by-month-and-n-week-day"
+  (check-roundtrip-through-string
+   (make-rrule #:freq 'hourly
+               #:count 3
+               #:bymonth '(1 3)
+               #:byday '((1 tuesday) (-1 thursday)))
+   (moment 1997 9 2 9 0)))
+
+(test-case "test-to-str-hourly-by-month-day-and-week-day"
+  (check-roundtrip-through-string
+   (make-rrule #:freq 'hourly
+               #:count 3
+               #:bymonthday '(1 3)
+               #:byday '((tuesday) (thursday)))
+   (moment 1997 9 2 9 0)))
+
+(test-case "test-to-str-hourly-by-month-and-month-day-and-week-day"
+  (check-roundtrip-through-string
+   (make-rrule #:freq 'hourly
+               #:count 3
+               #:bymonth '(1 3)
+               #:bymonthday '(1 3)
+               #:byday '((tuesday) (thursday)))
+   (moment 1997 9 2 9 0)))
+
+(test-case "test-to-str-hourly-by-year-day"
+  (check-roundtrip-through-string
+   (make-rrule #:freq 'hourly
+               #:count 4
+               #:byyearday '(1 100 200 365))
+   (moment 1997 9 2 9 0)))
+
+(test-case "test-to-str-hourly-by-year-day-neg"
+  (check-roundtrip-through-string
+   (make-rrule #:freq 'hourly
+               #:count 4
+               #:byyearday '(-365 -266 -166 -1))
+   (moment 1997 9 2 9 0)))
+
+(test-case "test-to-str-hourly-by-month-and-year-day"
+  (check-roundtrip-through-string
+   (make-rrule #:freq 'hourly
+               #:count 4
+               #:bymonth '(4 7)
+               #:byyearday '(1 100 200 365))
+   (moment 1997 9 2 9 0)))
+
+(test-case "test-to-str-hourly-by-month-and-year-day-neg"
+  (check-roundtrip-through-string
+   (make-rrule #:freq 'hourly
+               #:count 4
+               #:bymonth '(4 7)
+               #:byyearday '(-365 -266 -166 -1))
+   (moment 1997 9 2 9 0)))
+
+(test-case "test-to-str-hourly-by-week-no"
+  (check-roundtrip-through-string
+   (make-rrule #:freq 'hourly
+               #:count 3
+               #:byweeknumber '(20))
+   (moment 1997 9 2 9 0)))
+
+(test-case "test-to-str-hourly-by-week-no-and-week-day"
+  (check-roundtrip-through-string
+   (make-rrule #:freq 'hourly
+               #:count 3
+               #:byweeknumber '(1)
+               #:byday '(monday))
+   (moment 1997 9 2 9 0)))
+
+(test-case "test-to-str-hourly-by-week-no-and-week-day-large"
+  (check-roundtrip-through-string
+   (make-rrule #:freq 'hourly
+               #:count 3
+               #:byweeknumber '(52)
+               #:byday '(sunday))
+   (moment 1997 9 2 9 0)))
+
+(test-case "test-to-str-hourly-by-week-no-and-week-day-last"
+  (check-roundtrip-through-string
+   (make-rrule #:freq 'hourly
+               #:count 3
+               #:byweeknumber '(-1)
+               #:byday '(sunday))
+   (moment 1997 9 2 9 0)))
+
+(test-case "test-to-str-hourly-by-week-no-and-week-day53"
+  (check-roundtrip-through-string
+   (make-rrule #:freq 'hourly
+               #:count 3
+               #:byweeknumber '(53)
+               #:byday '(monday))
+   (moment 1997 9 2 9 0)))
+
+(test-case "test-to-str-hourly-by-easter"
+  (check-roundtrip-through-string
+   (make-rrule #:freq 'hourly
+               #:count 3
+               #:byeaster 0)
+   (moment 1997 9 2 9 0)))
+
+(test-case "test-to-str-hourly-by-easter-pos"
+  (check-roundtrip-through-string
+   (make-rrule #:freq 'hourly
+               #:count 3
+               #:byeaster 1)
+   (moment 1997 9 2 9 0)))
+
+(test-case "test-to-str-hourly-by-easter-neg"
+  (check-roundtrip-through-string
+   (make-rrule #:freq 'hourly
+               #:count 3
+               #:byeaster -1)
+   (moment 1997 9 2 9 0)))
+
+(test-case "test-to-str-hourly-by-hour"
+  (check-roundtrip-through-string
+   (make-rrule #:freq 'hourly
+               #:count 3
+               #:byhour '(6 18))
+   (moment 1997 9 2 9 0)))
+
+(test-case "test-to-str-hourly-by-minute"
+  (check-roundtrip-through-string
+   (make-rrule #:freq 'hourly
+               #:count 3
+               #:byminute '(6 18))
+   (moment 1997 9 2 9 0)))
+
+(test-case "test-to-str-hourly-by-second"
+  (check-roundtrip-through-string
+   (make-rrule #:freq 'hourly
+               #:count 3
+               #:bysecond '(6 18))
+   (moment 1997 9 2 9 0)))
+
+(test-case "test-to-str-hourly-by-hour-and-minute"
+  (check-roundtrip-through-string
+   (make-rrule #:freq 'hourly
+               #:count 3
+               #:byhour '(6 18)
+               #:byminute '(6 18))
+   (moment 1997 9 2 9 0)))
+
+(test-case "test-to-str-hourly-by-hour-and-second"
+  (check-roundtrip-through-string
+   (make-rrule #:freq 'hourly
+               #:count 3
+               #:byhour '(6 18)
+               #:bysecond '(6 18))
+   (moment 1997 9 2 9 0)))
+
+(test-case "test-to-str-hourly-by-minute-and-second"
+  (check-roundtrip-through-string
+   (make-rrule #:freq 'hourly
+               #:count 3
+               #:byminute '(6 18)
+               #:bysecond '(6 18))
+   (moment 1997 9 2 9 0)))
+
+(test-case "test-to-str-hourly-by-hour-and-minute-and-second"
+  (check-roundtrip-through-string
+   (make-rrule #:freq 'hourly
+               #:count 3
+               #:byhour '(6 18)
+               #:byminute '(6 18)
+               #:bysecond '(6 18))
+   (moment 1997 9 2 9 0)))
+
+(test-case "test-to-str-hourly-by-set-pos"
+  (check-roundtrip-through-string
+   (make-rrule #:freq 'hourly
+               #:count 3
+               #:byminute '(15 45)
+               #:bysecond '(15 45)
+               #:bysetpos (3 -3))
+   (moment 1997 9 2 9 0)))
+
+(test-case "test-to-str-minutely"
+  (check-roundtrip-through-string
+   (make-rrule #:freq 'minutely
+               #:count 3)
+   (moment 1997 9 2 9 0)))
+
+(test-case "test-to-str-minutely-interval"
+  (check-roundtrip-through-string
+   (make-rrule #:freq 'minutely
+               #:count 3
+               #:interval 2)
+   (moment 1997 9 2 9 0)))
+
+(test-case "test-to-str-minutely-interval-large"
+  (check-roundtrip-through-string
+   (make-rrule #:freq 'minutely
+               #:count 3
+               #:interval 1501)
+   (moment 1997 9 2 9 0)))
+
+(test-case "test-to-str-minutely-by-month"
+  (check-roundtrip-through-string
+   (make-rrule #:freq 'minutely
+               #:count 3
+               #:bymonth '(1 3))
+   (moment 1997 9 2 9 0)))
+
+(test-case "test-to-str-minutely-by-month-day"
+  (check-roundtrip-through-string
+   (make-rrule #:freq 'minutely
+               #:count 3
+               #:bymonthday '(1 3))
+   (moment 1997 9 2 9 0)))
+
+(test-case "test-to-str-minutely-by-month-and-month-day"
+  (check-roundtrip-through-string
+   (make-rrule #:freq 'minutely
+               #:count 3
+               #:bymonth '(1 3)
+               #:bymonthday '(5 7))
+   (moment 1997 9 2 9 0)))
+
+(test-case "test-to-str-minutely-by-week-day"
+  (check-roundtrip-through-string
+   (make-rrule #:freq 'minutely
+               #:count 3
+               #:byday '((tuesday) (thursday)))
+   (moment 1997 9 2 9 0)))
+
+(test-case "test-to-str-minutely-by-n-week-day"
+  (check-roundtrip-through-string
+   (make-rrule #:freq 'minutely
+               #:count 3
+               #:byday '((1 tuesday) (-1 thursday)))
+   (moment 1997 9 2 9 0)))
+
+(test-case "test-to-str-minutely-by-month-and-week-day"
+  (check-roundtrip-through-string
+   (make-rrule #:freq 'minutely
+               #:count 3
+               #:bymonth '(1 3)
+               #:byday '((tuesday) (thursday)))
+   (moment 1997 9 2 9 0)))
+
+(test-case "test-to-str-minutely-by-month-and-n-week-day"
+  (check-roundtrip-through-string
+   (make-rrule #:freq 'minutely
+               #:count 3
+               #:bymonth '(1 3)
+               #:byday '((1 tuesday) (-1 thursday)))
+   (moment 1997 9 2 9 0)))
+
+(test-case "test-to-str-minutely-by-month-day-and-week-day"
+  (check-roundtrip-through-string
+   (make-rrule #:freq 'minutely
+               #:count 3
+               #:bymonthday '(1 3)
+               #:byday '((tuesday) (thursday)))
+   (moment 1997 9 2 9 0)))
+
+(test-case "test-to-str-minutely-by-month-and-month-day-and-week-day"
+  (check-roundtrip-through-string
+   (make-rrule #:freq 'minutely
+               #:count 3
+               #:bymonth '(1 3)
+               #:bymonthday '(1 3)
+               #:byday '((tuesday) (thursday)))
+   (moment 1997 9 2 9 0)))
+
+(test-case "test-to-str-minutely-by-year-day"
+  (check-roundtrip-through-string
+   (make-rrule #:freq 'minutely
+               #:count 4
+               #:byyearday '(1 100 200 365))
+   (moment 1997 9 2 9 0)))
+
+(test-case "test-to-str-minutely-by-year-day-neg"
+  (check-roundtrip-through-string
+   (make-rrule #:freq 'minutely
+               #:count 4
+               #:byyearday '(-365 -266 -166 -1))
+   (moment 1997 9 2 9 0)))
+
+(test-case "test-to-str-minutely-by-month-and-year-day"
+  (check-roundtrip-through-string
+   (make-rrule #:freq 'minutely
+               #:count 4
+               #:bymonth '(4 7)
+               #:byyearday '(1 100 200 365))
+   (moment 1997 9 2 9 0)))
+
+(test-case "test-to-str-minutely-by-month-and-year-day-neg"
+  (check-roundtrip-through-string
+   (make-rrule #:freq 'minutely
+               #:count 4
+               #:bymonth '(4 7)
+               #:byyearday '(-365 -266 -166 -1))
+   (moment 1997 9 2 9 0)))
+
+(test-case "test-to-str-minutely-by-week-no"
+  (check-roundtrip-through-string
+   (make-rrule #:freq 'minutely
+               #:count 3
+               #:byweeknumber '(20))
+   (moment 1997 9 2 9 0)))
+
+(test-case "test-to-str-minutely-by-week-no-and-week-day"
+  (check-roundtrip-through-string
+   (make-rrule #:freq 'minutely
+               #:count 3
+               #:byweeknumber '(1)
+               #:byday '(monday))
+   (moment 1997 9 2 9 0)))
+
+(test-case "test-to-str-minutely-by-week-no-and-week-day-large"
+  (check-roundtrip-through-string
+   (make-rrule #:freq 'minutely
+               #:count 3
+               #:byweeknumber '(52)
+               #:byday '(sunday))
+   (moment 1997 9 2 9 0)))
+
+(test-case "test-to-str-minutely-by-week-no-and-week-day-last"
+  (check-roundtrip-through-string
+   (make-rrule #:freq 'minutely
+               #:count 3
+               #:byweeknumber '(-1)
+               #:byday '(sunday))
+   (moment 1997 9 2 9 0)))
+
+(test-case "test-to-str-minutely-by-week-no-and-week-day53"
+  (check-roundtrip-through-string
+   (make-rrule #:freq 'minutely
+               #:count 3
+               #:byweeknumber '(53)
+               #:byday '(monday))
+   (moment 1997 9 2 9 0)))
+
+(test-case "test-to-str-minutely-by-easter"
+  (check-roundtrip-through-string
+   (make-rrule #:freq 'minutely
+               #:count 3
+               #:byeaster 0)
+   (moment 1997 9 2 9 0)))
+
+(test-case "test-to-str-minutely-by-easter-pos"
+  (check-roundtrip-through-string
+   (make-rrule #:freq 'minutely
+               #:count 3
+               #:byeaster 1)
+   (moment 1997 9 2 9 0)))
+
+(test-case "test-to-str-minutely-by-easter-neg"
+  (check-roundtrip-through-string
+   (make-rrule #:freq 'minutely
+               #:count 3
+               #:byeaster -1)
+   (moment 1997 9 2 9 0)))
+
+(test-case "test-to-str-minutely-by-hour"
+  (check-roundtrip-through-string
+   (make-rrule #:freq 'minutely
+               #:count 3
+               #:byhour '(6 18))
+   (moment 1997 9 2 9 0)))
+
+(test-case "test-to-str-minutely-by-minute"
+  (check-roundtrip-through-string
+   (make-rrule #:freq 'minutely
+               #:count 3
+               #:byminute '(6 18))
+   (moment 1997 9 2 9 0)))
+
+(test-case "test-to-str-minutely-by-second"
+  (check-roundtrip-through-string
+   (make-rrule #:freq 'minutely
+               #:count 3
+               #:bysecond '(6 18))
+   (moment 1997 9 2 9 0)))
+
+(test-case "test-to-str-minutely-by-hour-and-minute"
+  (check-roundtrip-through-string
+   (make-rrule #:freq 'minutely
+               #:count 3
+               #:byhour '(6 18)
+               #:byminute '(6 18))
+   (moment 1997 9 2 9 0)))
+
+(test-case "test-to-str-minutely-by-hour-and-second"
+  (check-roundtrip-through-string
+   (make-rrule #:freq 'minutely
+               #:count 3
+               #:byhour '(6 18)
+               #:bysecond '(6 18))
+   (moment 1997 9 2 9 0)))
+
+(test-case "test-to-str-minutely-by-minute-and-second"
+  (check-roundtrip-through-string
+   (make-rrule #:freq 'minutely
+               #:count 3
+               #:byminute '(6 18)
+               #:bysecond '(6 18))
+   (moment 1997 9 2 9 0)))
+
+(test-case "test-to-str-minutely-by-hour-and-minute-and-second"
+  (check-roundtrip-through-string
+   (make-rrule #:freq 'minutely
+               #:count 3
+               #:byhour '(6 18)
+               #:byminute '(6 18)
+               #:bysecond '(6 18))
+   (moment 1997 9 2 9 0)))
+
+(test-case "test-to-str-minutely-by-set-pos"
+  (check-roundtrip-through-string
+   (make-rrule #:freq 'minutely
+               #:count 3
+               #:bysecond '(15 30 45)
+               #:bysetpos (3 -3))
+   (moment 1997 9 2 9 0)))
+
+(test-case "test-to-str-secondly"
+  (check-roundtrip-through-string
+   (make-rrule #:freq 'secondly
+               #:count 3)
+   (moment 1997 9 2 9 0)))
+
+(test-case "test-to-str-secondly-interval"
+  (check-roundtrip-through-string
+   (make-rrule #:freq 'secondly
+               #:count 3
+               #:interval 2)
+   (moment 1997 9 2 9 0)))
+
+(test-case "test-to-str-secondly-interval-large"
+  (check-roundtrip-through-string
+   (make-rrule #:freq 'secondly
+               #:count 3
+               #:interval 90061)
+   (moment 1997 9 2 9 0)))
+
+(test-case "test-to-str-secondly-by-month"
+  (check-roundtrip-through-string
+   (make-rrule #:freq 'secondly
+               #:count 3
+               #:bymonth '(1 3))
+   (moment 1997 9 2 9 0)))
+
+(test-case "test-to-str-secondly-by-month-day"
+  (check-roundtrip-through-string
+   (make-rrule #:freq 'secondly
+               #:count 3
+               #:bymonthday '(1 3))
+   (moment 1997 9 2 9 0)))
+
+(test-case "test-to-str-secondly-by-month-and-month-day"
+  (check-roundtrip-through-string
+   (make-rrule #:freq 'secondly
+               #:count 3
+               #:bymonth '(1 3)
+               #:bymonthday '(5 7))
+   (moment 1997 9 2 9 0)))
+
+(test-case "test-to-str-secondly-by-week-day"
+  (check-roundtrip-through-string
+   (make-rrule #:freq 'secondly
+               #:count 3
+               #:byday '((tuesday) (thursday)))
+   (moment 1997 9 2 9 0)))
+
+(test-case "test-to-str-secondly-by-n-week-day"
+  (check-roundtrip-through-string
+   (make-rrule #:freq 'secondly
+               #:count 3
+               #:byday '((1 tuesday) (-1 thursday)))
+   (moment 1997 9 2 9 0)))
+
+(test-case "test-to-str-secondly-by-month-and-week-day"
+  (check-roundtrip-through-string
+   (make-rrule #:freq 'secondly
+               #:count 3
+               #:bymonth '(1 3)
+               #:byday '((tuesday) (thursday)))
+   (moment 1997 9 2 9 0)))
+
+(test-case "test-to-str-secondly-by-month-and-n-week-day"
+  (check-roundtrip-through-string
+   (make-rrule #:freq 'secondly
+               #:count 3
+               #:bymonth '(1 3)
+               #:byday '((1 tuesday) (-1 thursday)))
+   (moment 1997 9 2 9 0)))
+
+(test-case "test-to-str-secondly-by-month-day-and-week-day"
+  (check-roundtrip-through-string
+   (make-rrule #:freq 'secondly
+               #:count 3
+               #:bymonthday '(1 3)
+               #:byday '((tuesday) (thursday)))
+   (moment 1997 9 2 9 0)))
+
+(test-case "test-to-str-secondly-by-month-and-month-day-and-week-day"
+  (check-roundtrip-through-string
+   (make-rrule #:freq 'secondly
+               #:count 3
+               #:bymonth '(1 3)
+               #:bymonthday '(1 3)
+               #:byday '((tuesday) (thursday)))
+   (moment 1997 9 2 9 0)))
+
+(test-case "test-to-str-secondly-by-year-day"
+  (check-roundtrip-through-string
+   (make-rrule #:freq 'secondly
+               #:count 4
+               #:byyearday '(1 100 200 365))
+   (moment 1997 9 2 9 0)))
+
+(test-case "test-to-str-secondly-by-year-day-neg"
+  (check-roundtrip-through-string
+   (make-rrule #:freq 'secondly
+               #:count 4
+               #:byyearday '(-365 -266 -166 -1))
+   (moment 1997 9 2 9 0)))
+
+(test-case "test-to-str-secondly-by-month-and-year-day"
+  (check-roundtrip-through-string
+   (make-rrule #:freq 'secondly
+               #:count 4
+               #:bymonth '(4 7)
+               #:byyearday '(1 100 200 365))
+   (moment 1997 9 2 9 0)))
+
+(test-case "test-to-str-secondly-by-month-and-year-day-neg"
+  (check-roundtrip-through-string
+   (make-rrule #:freq 'secondly
+               #:count 4
+               #:bymonth '(4 7)
+               #:byyearday '(-365 -266 -166 -1))
+   (moment 1997 9 2 9 0)))
+
+(test-case "test-to-str-secondly-by-week-no"
+  (check-roundtrip-through-string
+   (make-rrule #:freq 'secondly
+               #:count 3
+               #:byweeknumber '(20))
+   (moment 1997 9 2 9 0)))
+
+(test-case "test-to-str-secondly-by-week-no-and-week-day"
+  (check-roundtrip-through-string
+   (make-rrule #:freq 'secondly
+               #:count 3
+               #:byweeknumber '(1)
+               #:byday '(monday))
+   (moment 1997 9 2 9 0)))
+
+(test-case "test-to-str-secondly-by-week-no-and-week-day-large"
+  (check-roundtrip-through-string
+   (make-rrule #:freq 'secondly
+               #:count 3
+               #:byweeknumber '(52)
+               #:byday '(sunday))
+   (moment 1997 9 2 9 0)))
+
+(test-case "test-to-str-secondly-by-week-no-and-week-day-last"
+  (check-roundtrip-through-string
+   (make-rrule #:freq 'secondly
+               #:count 3
+               #:byweeknumber '(-1)
+               #:byday '(sunday))
+   (moment 1997 9 2 9 0)))
+
+(test-case "test-to-str-secondly-by-week-no-and-week-day53"
+  (check-roundtrip-through-string
+   (make-rrule #:freq 'secondly
+               #:count 3
+               #:byweeknumber '(53)
+               #:byday '(monday))
+   (moment 1997 9 2 9 0)))
+
+(test-case "test-to-str-secondly-by-hour"
+  (check-roundtrip-through-string
+   (make-rrule #:freq 'secondly
+               #:count 3
+               #:byhour '(6 18))
+   (moment 1997 9 2 9 0)))
+
+(test-case "test-to-str-secondly-by-minute"
+  (check-roundtrip-through-string
+   (make-rrule #:freq 'secondly
+               #:count 3
+               #:byminute '(6 18))
+   (moment 1997 9 2 9 0)))
+
+(test-case "test-to-str-secondly-by-second"
+  (check-roundtrip-through-string
+   (make-rrule #:freq 'secondly
+               #:count 3
+               #:bysecond '(6 18))
+   (moment 1997 9 2 9 0)))
+
+(test-case "test-to-str-secondly-by-hour-and-minute"
+  (check-roundtrip-through-string
+   (make-rrule #:freq 'secondly
+               #:count 3
+               #:byhour '(6 18)
+               #:byminute '(6 18))
+   (moment 1997 9 2 9 0)))
+
+(test-case "test-to-str-secondly-by-hour-and-second"
+  (check-roundtrip-through-string
+   (make-rrule #:freq 'secondly
+               #:count 3
+               #:byhour '(6 18)
+               #:bysecond '(6 18))
+   (moment 1997 9 2 9 0)))
+
+(test-case "test-to-str-secondly-by-minute-and-second"
+  (check-roundtrip-through-string
+   (make-rrule #:freq 'secondly
+               #:count 3
+               #:byminute '(6 18)
+               #:bysecond '(6 18))
+   (moment 1997 9 2 9 0)))
+
+(test-case "test-to-str-secondly-by-hour-and-minute-and-second"
+  (check-roundtrip-through-string
+   (make-rrule #:freq 'secondly
+               #:count 3
+               #:byhour '(6 18)
+               #:byminute '(6 18)
+               #:bysecond '(6 18))
+   (moment 1997 9 2 9 0)))
+
+(test-case "test-to-str-secondly-by-hour-and-minute-and-second-bug"
+  ;; This explores a bug found by Mathieu Bridon.
+  (check-roundtrip-through-string
+   (make-rrule #:freq 'secondly
+               #:count 3
+               #:bysecond '(0)
+               #:byminute '(1))
+   (moment 2010 3 22 12 1)))
+
+(test-case "test-to-str-with-wk-st"
+  (check-roundtrip-through-string
+   (make-rrule #:freq 'weekly
+               #:count 3
+               #:wkst 'sunday)
+   (moment 1997 9 2 9 0)))
