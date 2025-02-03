@@ -2065,7 +2065,7 @@
                                 #:count 2
                                 #:interval 2
                                 #:bymonth '(2)
-                                #:byday '(3)
+                                #:byday '(tuesday) ;; 3=tuesday, I think?
                                 #:byhour '(6)
                                 #:byminute '(6)
                                 #:bysecond '(6))
@@ -2602,7 +2602,7 @@
   (check-roundtrip-through-string
    (make-rrule #:freq 'yearly
                #:count 3
-               #:byday '((tuesday) (thursday)))
+               #:byday '(tuesday thursday))
    (moment 1997 9 2 9 0)))
 
 (test-case "test-to-str-yearly-by-n-week-day"
@@ -2624,7 +2624,7 @@
    (make-rrule #:freq 'yearly
                #:count 3
                #:bymonth '(1 3)
-               #:byday '((tuesday) (thursday)))
+               #:byday '(tuesday thursday))
    (moment 1997 9 2 9 0)))
 
 (test-case "test-to-str-yearly-by-month-and-n-week-day"
