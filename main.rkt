@@ -66,7 +66,7 @@
 (define bywdaylist/c (listof weekdaynum/c))
 (define ordmoday/c (or/c (integer-in 1 31)
                          (integer-in -31 -1)))
-(define monthdaynum/c (list/c ordmoday/c))
+(define monthdaynum/c ordmoday/c)
 (define bymodaylist/c (listof monthdaynum/c))
 (define ordyrday/c (or/c (integer-in 1 366)
                          (integer-in -366 -1)))
