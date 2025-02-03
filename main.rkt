@@ -10,7 +10,7 @@
   [valid-rrule/dtstart? (-> any/c dtstart/c any/c)]
   [make-rrule (->* (#:freq freq/c)
                    (#:until enddate/c
-                    #:count exact-positive-integer?
+                    #:count natural-number/c
                     #:interval exact-positive-integer?
                     #:bysecond byseclist/c
                     #:byminute byminlist/c
@@ -35,7 +35,7 @@
   [rrule-replace (->* (valid-rrule?)
                       (#:freq freq/c
                        #:until enddate/c
-                       #:count exact-positive-integer?
+                       #:count natural-number/c
                        #:interval exact-positive-integer?
                        #:bysecond byseclist/c
                        #:byminute byminlist/c
